@@ -1,773 +1,796 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NMB Haematology Lab System</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>NMB-HLabSys — Haematology Laboratory System</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --white:#ffffff;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f7f9fc;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --navy:#0f2d4a;--navy2:#1e4168;
+  --teal:#0891b2;--teal-l:#e0f7fc;--teal-m:#b2ebf2;
+  --green:#059669;--green-l:#d1fae5;
+  --red:#dc2626;--red-l:#fee2e2;
+  --amber:#d97706;--amber-l:#fef3c7;
+  --purple:#7c3aed;--purple-l:#ede9fe;
+  --slate:#64748b;--slate2:#94a3b8;--slate3:#cbd5e1;
+  --text:#0f2d4a;--text2:#475569;--text3:#94a3b8;
+  --shadow-sm:0 1px 3px rgba(15,45,74,.06),0 1px 2px rgba(15,45,74,.04);
+  --shadow:0 4px 12px rgba(15,45,74,.08),0 2px 4px rgba(15,45,74,.04);
+  --shadow-lg:0 16px 40px rgba(15,45,74,.12),0 4px 12px rgba(15,45,74,.06);
+  --r:10px;--r-sm:7px;--r-lg:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--slate3);border-radius:4px}
+.screen{display:none;min-height:100vh;animation:sIn .3s ease}
+.screen.active{display:block}
+@keyframes sIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* LOGIN */
+#screen-login{min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#e8f4fd 0%,#f0f4f8 40%,#e8f0fa 100%);position:relative;overflow:hidden}
+#screen-login.active{display:flex}
+#screen-login::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(8,145,178,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(8,145,178,.05) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+.blob1{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(8,145,178,.08) 0%,transparent 65%);top:-150px;right:-100px;pointer-events:none}
+.blob2{position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 65%);bottom:-80px;left:-60px;pointer-events:none}
+.lwrap{display:flex;background:var(--white);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;width:100%;max-width:860px}
+.lsidebar{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 100%);padding:48px 36px;width:300px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.lsidebar::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;border:40px solid rgba(255,255,255,.04);bottom:-60px;right:-60px}
+.ls-logo{display:flex;align-items:center;gap:12px}
+.ls-mark{width:44px;height:44px;border-radius:12px;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ls-mark svg{width:22px;height:22px}
+.ls-brand .ls-name{font-size:18px;font-weight:800;letter-spacing:-.3px;color:white}
+.ls-brand .ls-sub{font-size:10px;opacity:.5;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;color:white}
+.ls-tag{color:white;margin-top:40px}
+.ls-tag h2{font-size:26px;font-weight:700;line-height:1.3;opacity:.95}
+.ls-tag p{font-size:13px;opacity:.5;margin-top:8px;line-height:1.6}
+.ls-sdg{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;margin-top:auto}
+.sdg-ico{width:32px;height:32px;border-radius:6px;background:#3c9b3a;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sdg-txt{color:rgba(255,255,255,.7);font-size:11px}
+.sdg-txt strong{display:block;color:white;font-size:12px}
+.lfpanel{flex:1;padding:48px 40px;display:flex;flex-direction:column;justify-content:center}
+.lf-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
+.lf-sub{font-size:13px;color:var(--text2);margin-bottom:28px}
+.rgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
+.rpill{border:1.5px solid var(--border);background:var(--white);border-radius:var(--r-sm);padding:10px 6px;cursor:pointer;text-align:center;transition:all .18s;font-family:'Sora',sans-serif;color:var(--text2)}
+.rpill .ri{font-size:18px;display:block;margin-bottom:4px}
+.rpill .rl{font-size:10px;font-weight:600;letter-spacing:.5px}
+.rpill.on{border-color:var(--teal);background:var(--teal-l);color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
+.rpill:hover:not(.on){border-color:var(--slate2);background:var(--surface2)}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:11px;font-weight:600;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
+.fld input{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;font-size:14px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s}
+.fld input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
+.fld input::placeholder{color:var(--slate2)}
+.btn-login{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;letter-spacing:.3px;transition:background .15s,transform .1s}
+.btn-login:active{background:var(--navy2);transform:scale(.99)}
+.lfoot{font-size:12px;color:var(--text3);text-align:center;margin-top:14px}
+.lfoot a{color:var(--teal);text-decoration:none;font-weight:500}
+/* APP */
+.app{display:flex;flex-direction:column;min-height:100vh}
+.topbar{height:58px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-mark{width:30px;height:30px;border-radius:8px;background:var(--navy);display:flex;align-items:center;justify-content:center}
+.tb-mark svg{width:16px;height:16px}
+.tb-name{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
+.tb-r{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.3px}
+.chip.manager{background:var(--purple-l);color:var(--purple)}
+.chip.doctor{background:var(--teal-l);color:var(--teal)}
+.chip.tech{background:var(--amber-l);color:var(--amber)}
+.chip.patient{background:var(--green-l);color:var(--green)}
+.chip.admin{background:var(--red-l);color:var(--red)}
+.tb-out{background:transparent;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Sora',sans-serif;transition:all .15s}
+.tb-out:hover{border-color:var(--red);color:var(--red);background:var(--red-l)}
+.content{flex:1;padding:16px;padding-bottom:88px;overflow-y:auto;background:var(--bg)}
+@media(min-width:640px){.content{max-width:720px;margin:0 auto;padding:24px;padding-bottom:100px}}
+.btmnav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -4px 16px rgba(15,45,74,.05);z-index:100}
+@media(min-width:640px){.btmnav{max-width:720px;left:50%;transform:translateX(-50%);border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:12px 12px 0 0}}
+.bni{flex:1;padding:9px 4px 7px;background:transparent;border:none;cursor:pointer;text-align:center;font-family:'Sora',sans-serif;color:var(--text3);transition:color .15s}
+.bni .ni{font-size:19px;display:block;transition:transform .15s}
+.bni .nl{font-size:9px;display:block;font-weight:600;letter-spacing:.4px;margin-top:2px;text-transform:uppercase}
+.bni.on{color:var(--teal)}
+.bni.on .ni{transform:translateY(-1px)}
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.card-hd{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-hd::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--teal);flex-shrink:0}
+/* STATS */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+@media(min-width:480px){.sgrid{grid-template-columns:repeat(4,1fr)}}
+.scard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.sn{font-size:30px;font-weight:800;letter-spacing:-1px}
+.sl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
+.st{font-size:11px;margin-top:6px}
+.up{color:var(--green)}.dn{color:var(--red)}
+/* ROWS */
+.lrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.lrow:last-child{border-bottom:none;padding-bottom:0}
+.lrow:first-child{padding-top:0}
+.lic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
+.lic.tl{background:var(--teal-l)}.lic.gn{background:var(--green-l)}.lic.am{background:var(--amber-l)}.lic.rd{background:var(--red-l)}.lic.pu{background:var(--purple-l)}.lic.nv{background:#e8edf4}
+.lb{flex:1;min-width:0}
+.lb .lt{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .ls{font-size:11px;color:var(--text2);margin-top:2px}
+.le{text-align:right;flex-shrink:0}
+.le .lv{font-size:13px;font-weight:600}
+.le .lx{font-size:11px;color:var(--text3)}
+/* PILLS */
+.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.pill.sub{background:#f1f5f9;color:var(--slate)}
+.pill.rec{background:var(--teal-l);color:var(--teal)}
+.pill.pro{background:var(--amber-l);color:var(--amber)}
+.pill.com{background:var(--green-l);color:var(--green)}
+.pill.ver{background:var(--purple-l);color:var(--purple)}
+.pill.sta{background:var(--red-l);color:var(--red);font-weight:800}
+.pill.rel{background:#e0f2fe;color:#0369a1}
+/* RESULTS */
+.rrow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.rrow:last-child{border-bottom:none}
+.rrow.abn{background:var(--red-l);border-radius:6px;padding:8px 10px;margin:-2px -10px;border-bottom:none;margin-bottom:2px}
+.rn{font-size:13px;font-weight:500}
+.ru{font-size:11px;color:var(--text3);margin-top:1px}
+.rv{font-size:16px;font-weight:700;text-align:right}
+.rg{font-size:10px;color:var(--text3);margin-top:1px;text-align:right}
+/* ALERTS */
+.alrt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--r-sm);font-size:12px;margin-bottom:10px;border:1px solid;line-height:1.5}
+.alrt.err{background:var(--red-l);border-color:#fca5a5;color:#991b1b}
+.alrt.inf{background:var(--teal-l);border-color:var(--teal-m);color:#0e7490}
+.alrt.wrn{background:var(--amber-l);border-color:#fcd34d;color:#92400e}
+.alrt.suc{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
+.ai{font-size:15px;flex-shrink:0;margin-top:1px}
+/* BARS */
+.cbar{margin-bottom:14px}
+.cbhd{display:flex;justify-content:space-between;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.cbhd span:last-child{font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px}
+.cbtr{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.cbfi{height:100%;border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+/* TIMELINE */
+.tl-row{display:flex;gap:12px;padding-bottom:16px}
+.tl-row:last-child{padding-bottom:0}
+.tl-l{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
+.tl-d{width:12px;height:12px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:3px}
+.tl-d.done{background:var(--green);box-shadow:0 0 0 3px var(--green-l)}
+.tl-d.now{background:var(--teal);box-shadow:0 0 0 3px var(--teal-l)}
+.tl-ln{flex:1;width:2px;background:var(--border);margin-top:4px}
+.tl-row:last-child .tl-ln{display:none}
+.tl-b .tbl{font-size:12px;font-weight:600;color:var(--text)}
+.tl-b .tbs{font-size:11px;color:var(--text3);margin-top:1px;font-family:'JetBrains Mono',monospace}
+/* FORM */
+.frow{margin-bottom:14px}
+.frow label{display:block;font-size:10px;font-weight:700;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
+.frow input,.frow select,.frow textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
+.frow select option{background:var(--white)}
+.frow textarea{resize:none;min-height:72px}
+.chk{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--r-sm);border:1.5px solid var(--border);margin-bottom:6px;cursor:pointer;transition:border-color .15s,background .15s}
+.chk.on{background:var(--teal-l);border-color:var(--teal)}
+.chkb{width:18px;height:18px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:white;transition:all .15s}
+.chk.on .chkb{background:var(--teal);border-color:var(--teal);color:white}
+/* BTNS */
+.btn{border:none;border-radius:var(--r-sm);cursor:pointer;font-family:'Sora',sans-serif;font-weight:600;transition:all .15s}
+.bp{background:var(--navy);color:white;padding:12px 20px;font-size:13px}
+.bp:active{background:var(--navy2);transform:scale(.98)}
+.bt{background:var(--teal);color:white;padding:10px 16px;font-size:12px}
+.bt:active{opacity:.85}
+.bg{background:transparent;border:1.5px solid var(--border);color:var(--text2);padding:9px 14px;font-size:12px}
+.bg:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-l)}
+.bdr{background:var(--red-l);border:1.5px solid #fca5a5;color:var(--red);padding:9px 14px;font-size:12px}
+.bfull{width:100%}
+/* SEARCH */
+.srch{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+.srch input{flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:'Sora',sans-serif;color:var(--text)}
+.srch input::placeholder{color:var(--text3)}
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--white);padding:4px;border-radius:var(--r-sm);margin-bottom:14px;border:1px solid var(--border)}
+.tab{flex:1;padding:8px;border:none;border-radius:5px;background:transparent;font-size:11px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;color:var(--text3);transition:all .15s}
+.tab.on{background:var(--navy);color:white}
+/* HEADINGS */
+.shd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.shd h2{font-size:18px;font-weight:800;letter-spacing:-.4px}
+.shd .ss{font-size:12px;color:var(--text2);margin-top:1px}
+/* BANNER */
+.wbn{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 100%);border-radius:var(--r-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.wbn::after{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:30px solid rgba(255,255,255,.05)}
+.wbn h3{font-size:17px;font-weight:700;color:white}
+.wbn p{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
+/* GRAPH */
+.gsvg{width:100%;height:90px}
+/* RING */
+.pring{display:flex;align-items:center;gap:14px}
+.pring svg{transform:rotate(-90deg)}
+.ptr{fill:none;stroke:var(--bg);stroke-width:7}
+.pfi{fill:none;stroke:var(--teal);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .8s}
+.prn{font-size:22px;font-weight:800;letter-spacing:-1px}
+.prl{font-size:11px;color:var(--text2);margin-top:2px}
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(15,45,74,.45);backdrop-filter:blur(3px);z-index:200;align-items:flex-end;justify-content:center}
+.ov.open{display:flex;animation:fIn .2s}
+@keyframes fIn{from{opacity:0}to{opacity:1}}
+.sh{background:var(--white);border-radius:20px 20px 0 0;border-top:1px solid var(--border);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:24px;animation:shU .28s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(15,45,74,.12)}
+@keyframes shU{from{transform:translateY(50px);opacity:0}to{transform:none;opacity:1}}
+.sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.sh-title{font-size:17px;font-weight:800;margin-bottom:16px;letter-spacing:-.3px}
+.divider{height:1px;background:var(--border);margin:14px 0}
+/* TOAST */
+#toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;border-radius:10px;padding:11px 20px;font-size:13px;font-weight:600;z-index:300;white-space:nowrap;box-shadow:var(--shadow-lg);animation:fIn .25s}
+/* OVERDUE */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.ov-text{animation:pulse 1.4s infinite;color:var(--red)!important;font-weight:700!important}
+/* MISC */
+.sec-l{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px}
+@media(max-width:599px){.lsidebar{display:none}.lwrap{border-radius:16px}.lfpanel{padding:32px 24px}}
+</style>
 </head>
 <body>
 
-<!-- ========== LOGIN PAGE ========== -->
-<div id="loginPage" class="page active">
-    <div class="login-wrap">
-        <div class="login-left">
-            <div class="login-brand">
-                <div class="brand-dot"></div>
-                <span>NMB Haematology</span>
-            </div>
-            <h1 class="login-title">Laboratory<br><em>Test Request</em><br>System</h1>
-            <p class="login-sub">Nelson Mandela Bay Haematology Laboratory — Secure Portal</p>
-            <div class="login-roles-preview">
-                <div class="role-chip doctor">👨‍⚕️ Doctor</div>
-                <div class="role-chip patient">🧑 Patient</div>
-                <div class="role-chip tech">🔬 Lab Tech</div>
-                <div class="role-chip manager">📊 Manager</div>
-            </div>
+<!-- LOGIN -->
+<div class="screen active" id="screen-login">
+  <div class="blob1"></div><div class="blob2"></div>
+  <div class="lwrap">
+    <div class="lsidebar">
+      <div>
+        <div class="ls-logo">
+          <div class="ls-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <div class="ls-brand"><div class="ls-name">NMB-HLabSys</div><div class="ls-sub">Lab System</div></div>
         </div>
-        <div class="login-right">
-            <div class="login-card">
-                <h2>Sign In</h2>
-                <p class="login-hint">Select your role and enter credentials</p>
+        <div class="ls-tag"><h2>Haematology at the speed of care.</h2><p>Nelson Mandela Bay Haematology Diagnostic Laboratories — digital test request and results management.</p></div>
+      </div>
+      <div class="ls-sdg"><div class="sdg-ico">🏥</div><div class="sdg-txt"><strong>UN SDG 3</strong>Good Health &amp; Well-Being</div></div>
+    </div>
+    <div class="lfpanel">
+      <div class="lf-title">Welcome back</div>
+      <div class="lf-sub">Select your role and sign in to continue</div>
+      <div class="rgrid">
+        <button class="rpill on" onclick="selRole('manager',this)"><span class="ri">🧪</span><span class="rl">Manager</span></button>
+        <button class="rpill" onclick="selRole('doctor',this)"><span class="ri">👨‍⚕️</span><span class="rl">Doctor</span></button>
+        <button class="rpill" onclick="selRole('tech',this)"><span class="ri">🔬</span><span class="rl">Tech</span></button>
+        <button class="rpill" onclick="selRole('patient',this)"><span class="ri">🏥</span><span class="rl">Patient</span></button>
+        <button class="rpill" onclick="selRole('admin',this)"><span class="ri">⚙️</span><span class="rl">Admin</span></button>
+      </div>
+      <div class="fld"><label>Email Address</label><input id="l-email" type="email" value="manager@nmbhdl.co.za" placeholder="you@nmbhdl.co.za"></div>
+      <div class="fld"><label>Password</label><input id="l-pw" type="password" value="Test@1234" placeholder="••••••••"></div>
+      <button class="btn-login" onclick="doLogin()">Sign In →</button>
+      <div class="lfoot">Forgot password? <a href="#">Reset via email</a></div>
+    </div>
+  </div>
+</div>
 
-                <div class="form-group">
-                    <label>Select Role</label>
-                    <div class="role-select" id="roleSelect">
-                        <div class="role-btn active" data-role="doctor" onclick="selectRole('doctor')">👨‍⚕️ Doctor</div>
-                        <div class="role-btn" data-role="patient" onclick="selectRole('patient')">🧑 Patient</div>
-                        <div class="role-btn" data-role="tech" onclick="selectRole('tech')">🔬 Lab Tech</div>
-                        <div class="role-btn" data-role="manager" onclick="selectRole('manager')">📊 Manager</div>
-                    </div>
-                </div>
+<!-- MANAGER -->
+<div class="screen" id="screen-manager">
+<div class="app">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
+    <div class="tb-r"><span class="chip manager">🧪 Manager</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
+  </div>
+  <div class="content">
+    <div id="mgr-dash">
+      <div class="wbn"><h3>Good morning, Prof. Mostert 👋</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
+      <div class="sgrid">
+        <div class="scard"><div class="sn" style="color:var(--teal)">247</div><div class="sl">Tests Today</div><div class="st up">↑ 12% vs yesterday</div></div>
+        <div class="scard"><div class="sn" style="color:var(--green)">18</div><div class="sl">Technicians</div><div class="st" style="color:var(--text3)">3 on leave</div></div>
+        <div class="scard"><div class="sn" style="color:var(--red)">5</div><div class="sl">Low Stock</div><div class="st dn">↓ Reorder needed</div></div>
+        <div class="scard"><div class="sn" style="color:var(--purple)">34</div><div class="sl">Doctors</div><div class="st up">↑ 2 this month</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Tests by Category — This Week</div>
+        <div class="cbar"><div class="cbhd"><span>Full Blood Count</span><span>112</span></div><div class="cbtr"><div class="cbfi" style="width:85%;background:var(--teal)"></div></div></div>
+        <div class="cbar"><div class="cbhd"><span>Coagulation Studies</span><span>67</span></div><div class="cbtr"><div class="cbfi" style="width:51%;background:var(--green)"></div></div></div>
+        <div class="cbar"><div class="cbhd"><span>Differential Count</span><span>54</span></div><div class="cbtr"><div class="cbfi" style="width:41%;background:var(--purple)"></div></div></div>
+        <div class="cbar"><div class="cbhd"><span>Peripheral Blood Film</span><span>38</span></div><div class="cbtr"><div class="cbfi" style="width:29%;background:var(--amber)"></div></div></div>
+        <div class="cbar"><div class="cbhd"><span>Bone Marrow Biopsy</span><span>14</span></div><div class="cbtr"><div class="cbfi" style="width:11%;background:var(--red)"></div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">⚠️ Low Stock Alerts</div>
+        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">EDTA Tubes (3ml)</div><div class="ls">Reorder: 500 · BioTech Supplies</div></div><div class="le"><div class="lv dn">42 left</div><div class="lx">Critical</div></div></div>
+        <div class="lrow"><div class="lic am">📦</div><div class="lb"><div class="lt">Reagent Mix B-7</div><div class="ls">Reorder: 200 · MedLab SA</div></div><div class="le"><div class="lv" style="color:var(--amber)">198 left</div><div class="lx">Near limit</div></div></div>
+        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">Citrate Tubes (5ml)</div><div class="ls">Reorder: 300 · BioTech Supplies</div></div><div class="le"><div class="lv dn">11 left</div><div class="lx">Critical</div></div></div>
+      </div>
+    </div>
+    <div id="mgr-tests" style="display:none">
+      <div class="shd"><div><h2>Test Catalogue</h2><div class="ss">16 types · 5 categories</div></div><button class="btn bt" onclick="openM('m-addtest')">+ Add Test</button></div>
+      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search tests..."></div>
+      <div class="card">
+        <div class="card-hd" style="color:var(--teal)">Full Blood Count — 5 tests</div>
+        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">Haemoglobin (Hb)</div><div class="ls">Whole blood · g/dL · Range: 12–17 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">White Cell Count</div><div class="ls">Whole blood · x10³/µL · Range: 4–11 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">Platelet Count</div><div class="ls">Whole blood · x10³/µL · Range: 150–400 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd" style="color:var(--amber)">Coagulation Studies — 3 tests</div>
+        <div class="lrow"><div class="lic am">🧬</div><div class="lb"><div class="lt">Prothrombin Time (PT)</div><div class="ls">Plasma · seconds · Range: 11–13.5 · TAT 45min</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic am">🧬</div><div class="lb"><div class="lt">APTT</div><div class="ls">Plasma · seconds · Range: 25–35 · TAT 45min</div></div><div class="le"><span class="pill com">Active</span></div></div>
+      </div>
+    </div>
+    <div id="mgr-stock" style="display:none">
+      <div class="shd"><div><h2>Stock Management</h2><div class="ss">24 consumable items</div></div><button class="btn bt" onclick="openM('m-order')">+ Order</button></div>
+      <div class="card">
+        <div class="card-hd">Consumable Inventory</div>
+        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">EDTA Tubes (3ml)</div><div class="ls">BioTech Supplies · Min: 500</div></div><div class="le"><div class="lv dn">42</div></div></div>
+        <div class="lrow"><div class="lic gn">📦</div><div class="lb"><div class="lt">Heparin Tubes</div><div class="ls">MedLab SA · Min: 200</div></div><div class="le"><div class="lv up">830</div></div></div>
+        <div class="lrow"><div class="lic am">📦</div><div class="lb"><div class="lt">Reagent Mix B-7</div><div class="ls">MedLab SA · Min: 200</div></div><div class="le"><div class="lv" style="color:var(--amber)">198</div></div></div>
+        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">Citrate Tubes (5ml)</div><div class="ls">BioTech Supplies · Min: 300</div></div><div class="le"><div class="lv dn">11</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Recent Orders</div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">ORD-2026-042</div><div class="ls">BioTech Supplies · 3 items · 3 Mar 2026</div></div><div class="le"><span class="pill pro">Ordered</span></div></div>
+        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">ORD-2026-041</div><div class="ls">MedLab SA · 2 items · 28 Feb 2026</div></div><div class="le"><span class="pill com">Complete</span></div></div>
+      </div>
+    </div>
+    <div id="mgr-staff" style="display:none">
+      <div class="shd"><div><h2>Staff</h2></div><button class="btn bt" onclick="openM('m-addstaff')">+ Add</button></div>
+      <div class="tabs"><button class="tab on" onclick="subT(this,'st-docs')">Doctors</button><button class="tab" onclick="subT(this,'st-techs')">Technicians</button></div>
+      <div id="st-docs" class="card">
+        <div class="lrow"><div class="lic pu">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Amahle Dlamini</div><div class="ls">MP0123456 · dlamini@clinic.co.za</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic pu">👩‍⚕️</div><div class="lb"><div class="lt">Dr. Johan Pretorius</div><div class="ls">MP0234567 · pretorius@nhospital.co.za</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic pu">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Priya Naidoo</div><div class="ls">MP0345678 · naidoo@medplex.co.za</div></div><div class="le"><span class="pill sub">Pending PW</span></div></div>
+      </div>
+      <div id="st-techs" style="display:none" class="card">
+        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Zanele Mokoena</div><div class="ls">EMP-0041 · FBC, Diff Count, Coagulation</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Sipho Khumalo</div><div class="ls">EMP-0042 · FBC, Peripheral Film</div></div><div class="le"><span class="pill com">Active</span></div></div>
+        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Annika van Wyk</div><div class="ls">EMP-0043 · Coagulation, Bone Marrow</div></div><div class="le"><span class="pill pro">On Leave</span></div></div>
+      </div>
+    </div>
+  </div>
+  <nav class="btmnav">
+    <button class="bni on" onclick="mT('dash',this)"><span class="ni">📊</span><span class="nl">Dashboard</span></button>
+    <button class="bni" onclick="mT('tests',this)"><span class="ni">🧬</span><span class="nl">Tests</span></button>
+    <button class="bni" onclick="mT('stock',this)"><span class="ni">📦</span><span class="nl">Stock</span></button>
+    <button class="bni" onclick="mT('staff',this)"><span class="ni">👥</span><span class="nl">Staff</span></button>
+  </nav>
+</div>
+</div>
 
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="username" placeholder="Enter username" class="form-input" />
-                </div>
+<!-- DOCTOR -->
+<div class="screen" id="screen-doctor">
+<div class="app">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
+    <div class="tb-r"><span class="chip doctor">👨‍⚕️ Doctor</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
+  </div>
+  <div class="content">
+    <div id="doc-dash">
+      <div class="wbn"><h3>Dr. Amahle Dlamini 👋</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
+      <div class="alrt err"><span class="ai">⚠️</span><div><strong>3 abnormal results</strong> require your review today.</div></div>
+      <div class="sgrid">
+        <div class="scard"><div class="sn" style="color:var(--teal)">12</div><div class="sl">Active Requests</div></div>
+        <div class="scard"><div class="sn" style="color:var(--green)">8</div><div class="sl">Results Ready</div></div>
+        <div class="scard"><div class="sn" style="color:var(--red)">3</div><div class="sl">Abnormal</div></div>
+        <div class="scard"><div class="sn" style="color:var(--amber)">4</div><div class="sl">Unreleased</div></div>
+      </div>
+      <div class="shd"><div><h2>Recent Requests</h2></div><button class="btn bt" onclick="openM('m-newreq')">+ New Request</button></div>
+      <div class="card">
+        <div class="lrow" onclick="openM('m-results')" style="cursor:pointer"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC, Coagulation · 5 Mar</div></div><div class="le"><span class="pill com">Completed</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC · 5 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
+        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849 🚨</div><div class="ls">Pieter de Wet · STAT · Diff Count · 6 Mar</div></div><div class="le"><span class="pill sta">STAT</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation · 6 Mar</div></div><div class="le"><span class="pill sub">Submitted</span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Abnormal Alerts — Last 5 Days</div>
+        <div class="alrt err" style="margin-bottom:8px"><span class="ai">⬆</span><div>Haemoglobin 19.2 g/dL · <strong>Thabo Sithole</strong> · REQ-0847</div></div>
+        <div class="alrt err" style="margin-bottom:8px"><span class="ai">⬇</span><div>Platelet Count 42 x10³/µL · <strong>Nomsa Dube</strong> · REQ-0848</div></div>
+        <div class="alrt err"><span class="ai">⬆</span><div>WCC 18.5 x10³/µL · <strong>Pieter de Wet</strong> · REQ-0849</div></div>
+      </div>
+    </div>
+    <div id="doc-patients" style="display:none">
+      <div class="shd"><div><h2>Patients</h2></div><button class="btn bt">+ Add Patient</button></div>
+      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search by name or SA ID..."></div>
+      <div class="card">
+        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Thabo Sithole</div><div class="ls">DOB: 12 Apr 1985 · ID: 9504125067082</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">4 requests</div></div></div>
+        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Nomsa Dube</div><div class="ls">DOB: 3 Jul 1992 · ID: 9207030486089</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">2 requests</div></div></div>
+        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Pieter de Wet</div><div class="ls">DOB: 29 Nov 1970 · ID: 7011295018083</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">6 requests</div></div></div>
+        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Aisha Khan</div><div class="ls">DOB: 15 Feb 1998 · ID: 9802150123086</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">1 request</div></div></div>
+      </div>
+    </div>
+    <div id="doc-results" style="display:none">
+      <div class="shd"><div><h2>Results</h2><div class="ss">Awaiting your review</div></div></div>
+      <div class="card">
+        <div class="card-hd">REQ-2026-0847 · Thabo Sithole</div>
+        <div class="alrt err" style="margin-bottom:14px"><span class="ai">⚠️</span><div><strong>2 abnormal values</strong> detected.</div></div>
+        <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+        <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
+        <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+        <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">Normal</div></div></div>
+        <div style="display:flex;gap:8px;margin-top:14px"><button class="btn bt" style="flex:1" onclick="openM('m-release')">Release to Patient</button><button class="btn bg">📄 PDF</button></div>
+      </div>
+    </div>
+    <div id="doc-requests" style="display:none">
+      <div class="shd"><div><h2>All Requests</h2></div><button class="btn bt" onclick="openM('m-newreq')">+ New</button></div>
+      <div class="tabs"><button class="tab on">All</button><button class="tab">Pending</button><button class="tab">Completed</button></div>
+      <div class="card">
+        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC, Coagulation</div></div><div class="le"><span class="pill com">Completed</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
+        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849</div><div class="ls">Pieter de Wet · STAT · Diff Count</div></div><div class="le"><span class="pill sta">STAT</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation</div></div><div class="le"><span class="pill sub">Submitted</span></div></div>
+      </div>
+    </div>
+  </div>
+  <nav class="btmnav">
+    <button class="bni on" onclick="dT('dash',this)"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="bni" onclick="dT('patients',this)"><span class="ni">👥</span><span class="nl">Patients</span></button>
+    <button class="bni" onclick="dT('results',this)"><span class="ni">📊</span><span class="nl">Results</span></button>
+    <button class="bni" onclick="dT('requests',this)"><span class="ni">📋</span><span class="nl">Requests</span></button>
+  </nav>
+</div>
+</div>
 
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="password" placeholder="Enter password" class="form-input" />
-                </div>
-
-                <div class="login-demo-hint">
-                    <strong>Demo credentials:</strong> any username and password works
-                </div>
-
-                <button class="btn-login" onclick="login()">Sign In →</button>
-
-                <div id="loginError" class="login-error" style="display:none">Please fill in all fields</div>
-            </div>
+<!-- TECHNICIAN -->
+<div class="screen" id="screen-tech">
+<div class="app">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
+    <div class="tb-r"><span class="chip tech">🔬 Technician</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
+  </div>
+  <div class="content">
+    <div id="tech-work">
+      <div class="wbn"><h3>Zanele Mokoena 🔬</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
+      <div class="alrt err"><span class="ai">🚨</span><div><strong>STAT:</strong> REQ-0849 · Pieter de Wet · Diff Count — overdue</div></div>
+      <div class="sgrid">
+        <div class="scard"><div class="sn" style="color:var(--teal)">7</div><div class="sl">Assigned</div></div>
+        <div class="scard"><div class="sn ov-text">2</div><div class="sl">Overdue</div></div>
+        <div class="scard"><div class="sn" style="color:var(--purple)">4</div><div class="sl">To Verify</div></div>
+        <div class="scard"><div class="sn" style="color:var(--red)">1</div><div class="sl">STAT</div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Workload</div>
+        <div class="pring">
+          <svg width="60" height="60" viewBox="0 0 60 60"><circle class="ptr" cx="30" cy="30" r="24"/><circle class="pfi" cx="30" cy="30" r="24" stroke-dasharray="150.8" stroke-dashoffset="43"/></svg>
+          <div><div class="prn">5/7</div><div class="prl">Tests in progress today</div></div>
         </div>
+      </div>
+      <div class="sec-l">My Assigned Tests</div>
+      <div class="card">
+        <div class="lrow" onclick="openM('m-capture')" style="cursor:pointer"><div class="lic rd">🔬</div><div class="lb"><div class="lt">Diff Count · Pieter de Wet</div><div class="ls"><span class="ov-text">REQ-0849 · OVERDUE · Due 07:45</span></div></div><div class="le"><span class="pill sta">STAT</span></div></div>
+        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">FBC · Nomsa Dube</div><div class="ls">REQ-0848 · Due 09:15</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
+        <div class="lrow"><div class="lic gn">🔬</div><div class="lb"><div class="lt">Coagulation · Thabo Sithole</div><div class="ls">REQ-0847 · Completed 11:45</div></div><div class="le"><span class="pill com">Done</span></div></div>
+      </div>
+      <div class="sec-l">Awaiting Sample Receipt</div>
+      <div class="card">
+        <div class="lrow"><div class="lic tl">📥</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation · Routine</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px" onclick="openM('m-receive')">Receive</button></div></div>
+      </div>
     </div>
+    <div id="tech-verify" style="display:none">
+      <div class="shd"><div><h2>Verification Queue</h2><div class="ss">Results awaiting sign-off</div></div></div>
+      <div class="card">
+        <div class="lrow"><div class="lic pu">✅</div><div class="lb"><div class="lt">FBC · Thabo Sithole</div><div class="ls">Captured by: Sipho Khumalo · REQ-0847</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px" onclick="openM('m-verify')">Verify</button></div></div>
+        <div class="lrow"><div class="lic pu">✅</div><div class="lb"><div class="lt">PT · Aisha Khan</div><div class="ls">Captured by: Annika van Wyk · REQ-0850</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Verify</button></div></div>
+      </div>
+      <div class="sec-l">Returned to Me</div>
+      <div class="card">
+        <div class="alrt wrn"><span class="ai">↩</span><div><strong>APTT · Nomsa Dube (REQ-0848)</strong><br>"Check reagent calibration — value seems low"</div></div>
+        <div style="margin-top:8px"><button class="btn bg bfull">Review &amp; Resubmit</button></div>
+      </div>
+    </div>
+    <div id="tech-all" style="display:none">
+      <div class="shd"><div><h2>All Requests</h2></div></div>
+      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search request or patient..."></div>
+      <div class="card">
+        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849 🚨 STAT</div><div class="ls">Pieter de Wet · Diff Count · 6 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
+        <div class="lrow"><div class="lic am">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC · 5 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
+        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC + Coag · 5 Mar</div></div><div class="le"><span class="pill com">Completed</span></div></div>
+      </div>
+    </div>
+    <div id="tech-profile" style="display:none">
+      <div class="shd"><div><h2>My Profile</h2></div></div>
+      <div class="card">
+        <div class="lrow"><div class="lb"><div class="lt">Zanele Mokoena</div><div class="ls">zanele.mokoena@nmbhdl.co.za</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">Employee Number</div><div class="ls">EMP-0041</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">SA ID Number</div><div class="ls" style="font-family:'JetBrains Mono',monospace">9205150342084</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hd">Assigned Test Types</div>
+        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Full Blood Count (FBC)</span></div>
+        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Differential Count</span></div>
+        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Coagulation Studies</span></div>
+        <div class="chk"><div class="chkb"></div><span style="font-size:13px;color:var(--text3)">Bone Marrow Biopsy</span></div>
+      </div>
+    </div>
+  </div>
+  <nav class="btmnav">
+    <button class="bni on" onclick="tT('work',this)"><span class="ni">🔬</span><span class="nl">My Work</span></button>
+    <button class="bni" onclick="tT('verify',this)"><span class="ni">✅</span><span class="nl">Verify</span></button>
+    <button class="bni" onclick="tT('all',this)"><span class="ni">📋</span><span class="nl">All Reqs</span></button>
+    <button class="bni" onclick="tT('profile',this)"><span class="ni">👤</span><span class="nl">Profile</span></button>
+  </nav>
+</div>
 </div>
 
-<!-- ========== DOCTOR DASHBOARD ========== -->
-<div id="doctorPage" class="page">
-    <div class="app-layout">
-        <aside class="sidebar" style="--accent:#2563eb">
-            <div class="sidebar-brand">
-                <div class="brand-dot" style="background:#2563eb"></div>
-                <span>NMB Lab</span>
-            </div>
-            <nav class="sidebar-nav">
-                <a class="nav-item active" onclick="showTab('doctor','overview')">📊 Overview</a>
-                <a class="nav-item" onclick="showTab('doctor','request')">➕ New Request</a>
-                <a class="nav-item" onclick="showTab('doctor','requests')">📋 My Requests</a>
-                <a class="nav-item" onclick="showTab('doctor','results')">📄 Results</a>
-            </nav>
-            <div class="sidebar-user">
-                <div class="user-avatar" style="background:#dbeafe;color:#2563eb">DR</div>
-                <div>
-                    <div class="user-name">Dr. Sarah Nkosi</div>
-                    <div class="user-role">Doctor</div>
-                </div>
-            </div>
-            <button class="btn-logout" onclick="logout()">← Logout</button>
-        </aside>
-        <main class="main-content">
-
-            <!-- DOCTOR OVERVIEW -->
-            <div id="doctor-overview" class="tab-content active">
-                <div class="page-header">
-                    <h2>Good morning, Dr. Nkosi 👋</h2>
-                    <p>Here is a summary of your test requests today</p>
-                </div>
-                <div class="stats-row">
-                    <div class="stat-card" style="--c:#2563eb">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-val">12</div>
-                        <div class="stat-lbl">Total Requests</div>
-                    </div>
-                    <div class="stat-card" style="--c:#d97706">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-val">4</div>
-                        <div class="stat-lbl">Pending</div>
-                    </div>
-                    <div class="stat-card" style="--c:#059669">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-val">7</div>
-                        <div class="stat-lbl">Results Ready</div>
-                    </div>
-                    <div class="stat-card" style="--c:#dc2626">
-                        <div class="stat-icon">🚨</div>
-                        <div class="stat-val">1</div>
-                        <div class="stat-lbl">Critical Flags</div>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <h3>Recent Requests</h3>
-                    <table class="data-table">
-                        <thead><tr><th>Patient</th><th>Test</th><th>Date</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td>James Mokoena</td><td>Full Blood Count</td><td>04 Mar 2026</td><td><span class="badge badge-ready">Ready</span></td></tr>
-                            <tr><td>Amahle Dube</td><td>Coagulation Panel</td><td>04 Mar 2026</td><td><span class="badge badge-pending">Pending</span></td></tr>
-                            <tr><td>Sipho Khumalo</td><td>Differential Count</td><td>03 Mar 2026</td><td><span class="badge badge-ready">Ready</span></td></tr>
-                            <tr><td>Nomsa Zulu</td><td>Blood Grouping</td><td>03 Mar 2026</td><td><span class="badge badge-critical">Critical</span></td></tr>
-                            <tr><td>David Peters</td><td>Bone Marrow Aspirate</td><td>02 Mar 2026</td><td><span class="badge badge-processing">Processing</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- DOCTOR NEW REQUEST -->
-            <div id="doctor-request" class="tab-content">
-                <div class="page-header">
-                    <h2>Submit New Test Request</h2>
-                    <p>Fill in the patient details and select the required tests</p>
-                </div>
-                <div class="form-card">
-                    <div class="form-section-title">Patient Information</div>
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Patient Full Name *</label>
-                            <input type="text" class="form-input" placeholder="e.g. John Smith" />
-                        </div>
-                        <div class="form-group">
-                            <label>ID Number *</label>
-                            <input type="text" class="form-input" placeholder="13 digit ID number" />
-                        </div>
-                        <div class="form-group">
-                            <label>Date of Birth *</label>
-                            <input type="date" class="form-input" />
-                        </div>
-                        <div class="form-group">
-                            <label>Gender *</label>
-                            <select class="form-input">
-                                <option>Select gender</option>
-                                <option>Male</option>
-                                <option>Female</option>
-                                <option>Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Ward / Clinic *</label>
-                            <input type="text" class="form-input" placeholder="e.g. Ward 4B" />
-                        </div>
-                        <div class="form-group">
-                            <label>Clinical Indication *</label>
-                            <input type="text" class="form-input" placeholder="Reason for test" />
-                        </div>
-                    </div>
-
-                    <div class="form-section-title" style="margin-top:28px">Select Tests Required</div>
-                    <div class="test-checkboxes">
-                        <label class="check-item"><input type="checkbox" checked /> Full Blood Count (FBC)</label>
-                        <label class="check-item"><input type="checkbox" /> Differential Count</label>
-                        <label class="check-item"><input type="checkbox" /> Blood Smear</label>
-                        <label class="check-item"><input type="checkbox" /> Prothrombin Time (PT)</label>
-                        <label class="check-item"><input type="checkbox" /> APTT</label>
-                        <label class="check-item"><input type="checkbox" /> D-Dimer</label>
-                        <label class="check-item"><input type="checkbox" /> Blood Grouping</label>
-                        <label class="check-item"><input type="checkbox" /> Crossmatch</label>
-                        <label class="check-item"><input type="checkbox" /> Bone Marrow Aspirate</label>
-                        <label class="check-item"><input type="checkbox" /> Haemoglobin Electrophoresis</label>
-                        <label class="check-item"><input type="checkbox" /> Flow Cytometry</label>
-                        <label class="check-item"><input type="checkbox" /> JAK2 Mutation Test</label>
-                    </div>
-
-                    <div class="form-group" style="margin-top:20px">
-                        <label>Additional Notes</label>
-                        <textarea class="form-input" rows="3" placeholder="Any additional clinical notes..."></textarea>
-                    </div>
-
-                    <div class="form-actions">
-                        <button class="btn-secondary" onclick="clearForm()">Clear Form</button>
-                        <button class="btn-primary" onclick="submitRequest()">Submit Request →</button>
-                    </div>
-
-                    <div id="requestSuccess" class="success-msg" style="display:none">
-                        ✅ Test request submitted successfully! The lab has been notified.
-                    </div>
-                </div>
-            </div>
-
-            <!-- DOCTOR MY REQUESTS -->
-            <div id="doctor-requests" class="tab-content">
-                <div class="page-header">
-                    <h2>My Test Requests</h2>
-                    <p>All test requests submitted by you</p>
-                </div>
-                <div class="section-card">
-                    <div class="table-filters">
-                        <input type="text" class="form-input filter-input" placeholder="🔍 Search patient name..." />
-                        <select class="form-input filter-select">
-                            <option>All Statuses</option>
-                            <option>Pending</option>
-                            <option>Processing</option>
-                            <option>Ready</option>
-                            <option>Critical</option>
-                        </select>
-                    </div>
-                    <table class="data-table">
-                        <thead><tr><th>Req. No</th><th>Patient</th><th>Tests</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
-                        <tbody>
-                            <tr><td>#REQ-001</td><td>James Mokoena</td><td>FBC, Diff Count</td><td>04 Mar 2026</td><td><span class="badge badge-ready">Ready</span></td><td><button class="btn-small" onclick="alert('Viewing results for James Mokoena')">View</button></td></tr>
-                            <tr><td>#REQ-002</td><td>Amahle Dube</td><td>Coagulation Panel</td><td>04 Mar 2026</td><td><span class="badge badge-pending">Pending</span></td><td><button class="btn-small">View</button></td></tr>
-                            <tr><td>#REQ-003</td><td>Sipho Khumalo</td><td>Differential Count</td><td>03 Mar 2026</td><td><span class="badge badge-ready">Ready</span></td><td><button class="btn-small">View</button></td></tr>
-                            <tr><td>#REQ-004</td><td>Nomsa Zulu</td><td>Blood Grouping</td><td>03 Mar 2026</td><td><span class="badge badge-critical">Critical</span></td><td><button class="btn-small btn-urgent">Urgent</button></td></tr>
-                            <tr><td>#REQ-005</td><td>David Peters</td><td>Bone Marrow</td><td>02 Mar 2026</td><td><span class="badge badge-processing">Processing</span></td><td><button class="btn-small">View</button></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- DOCTOR RESULTS -->
-            <div id="doctor-results" class="tab-content">
-                <div class="page-header">
-                    <h2>Patient Results</h2>
-                    <p>View and download authorised test results</p>
-                </div>
-                <div class="section-card">
-                    <h3>James Mokoena — Full Blood Count</h3>
-                    <p style="color:#6b7280;font-size:0.88rem;margin-bottom:20px">Result Date: 04 March 2026 | Authorised by: Sr. Lab Scientist T. Botha</p>
-                    <table class="data-table results-table">
-                        <thead><tr><th>Test</th><th>Result</th><th>Units</th><th>Reference Range</th><th>Flag</th></tr></thead>
-                        <tbody>
-                            <tr><td>Haemoglobin</td><td>8.5</td><td>g/dL</td><td>13.5 – 17.5</td><td><span class="flag-low">L</span></td></tr>
-                            <tr><td>RBC Count</td><td>3.2</td><td>x10¹²/L</td><td>4.5 – 5.5</td><td><span class="flag-low">L</span></td></tr>
-                            <tr><td>WBC Count</td><td>11.8</td><td>x10⁹/L</td><td>4.0 – 11.0</td><td><span class="flag-high">H</span></td></tr>
-                            <tr><td>Platelets</td><td>48</td><td>x10⁹/L</td><td>150 – 400</td><td><span class="flag-critical">CRIT</span></td></tr>
-                            <tr><td>Haematocrit</td><td>0.28</td><td>L/L</td><td>0.40 – 0.52</td><td><span class="flag-low">L</span></td></tr>
-                            <tr><td>MCV</td><td>72</td><td>fL</td><td>80 – 100</td><td><span class="flag-low">L</span></td></tr>
-                            <tr><td>Neutrophils</td><td>8.5</td><td>x10⁹/L</td><td>2.0 – 7.5</td><td><span class="flag-high">H</span></td></tr>
-                            <tr><td>Lymphocytes</td><td>1.8</td><td>x10⁹/L</td><td>1.0 – 4.0</td><td><span class="flag-normal">N</span></td></tr>
-                        </tbody>
-                    </table>
-                    <div class="result-comment">
-                        <strong>Scientist Comment:</strong> Severely reduced platelet count. Anaemia present with microcytic indices suggesting iron deficiency. Elevated WBC and neutrophils suggest possible infection. Recommend urgent clinical correlation and repeat FBC in 48 hours.
-                    </div>
-                    <div class="form-actions" style="margin-top:16px">
-                        <button class="btn-primary" onclick="alert('Result downloaded as PDF')">⬇ Download PDF</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+<!-- PATIENT -->
+<div class="screen" id="screen-patient">
+<div class="app">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
+    <div class="tb-r"><span class="chip patient">🏥 Patient</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
+  </div>
+  <div class="content">
+    <div id="pat-home">
+      <div class="wbn"><h3>Hello, Thabo 👋</h3><p>Your health journey, at a glance.</p></div>
+      <div class="alrt inf"><span class="ai">📋</span><div>Your results for <strong>REQ-0847</strong> have been released by your doctor.</div></div>
+      <div class="sgrid">
+        <div class="scard"><div class="sn" style="color:var(--teal)">4</div><div class="sl">Requests</div></div>
+        <div class="scard"><div class="sn" style="color:var(--green)">1</div><div class="sl">Results Ready</div></div>
+        <div class="scard"><div class="sn" style="color:var(--amber)">1</div><div class="sl">In Progress</div></div>
+        <div class="scard"><div class="sn" style="color:var(--purple)">2</div><div class="sl">Doctors</div></div>
+      </div>
+      <div class="shd"><div><h2>My Requests</h2></div></div>
+      <div class="card">
+        <div class="lrow" onclick="openM('m-patres')" style="cursor:pointer"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Dr. Dlamini · FBC + Coagulation · 5 Mar</div></div><div class="le"><span class="pill rel">Ready</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0831</div><div class="ls">Dr. Dlamini · FBC · 15 Feb</div></div><div class="le"><span class="pill com">Released</span></div></div>
+        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0819</div><div class="ls">Dr. Pretorius · Coagulation · 3 Jan</div></div><div class="le"><span class="pill com">Released</span></div></div>
+      </div>
+      <div class="shd"><div><h2>Haemoglobin Trend</h2><div class="ss">Last 6 months</div></div></div>
+      <div class="card">
+        <svg class="gsvg" viewBox="0 0 300 90">
+          <defs><linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0891b2" stop-opacity=".18"/><stop offset="100%" stop-color="#0891b2" stop-opacity="0"/></linearGradient></defs>
+          <rect x="10" y="30" width="280" height="22" fill="rgba(5,150,105,.06)" rx="2"/>
+          <line x1="10" y1="30" x2="290" y2="30" stroke="#059669" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+          <line x1="10" y1="52" x2="290" y2="52" stroke="#059669" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
+          <text x="292" y="33" fill="#059669" font-size="7" font-family="JetBrains Mono">17</text>
+          <text x="292" y="55" fill="#059669" font-size="7" font-family="JetBrains Mono">12</text>
+          <path d="M20,50 L65,46 L115,44 L165,48 L215,40 L265,18 L290,15" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M20,50 L65,46 L115,44 L165,48 L215,40 L265,18 L290,15 L290,90 L20,90 Z" fill="url(#hbg)"/>
+          <circle cx="20" cy="50" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="65" cy="46" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="115" cy="44" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="165" cy="48" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="215" cy="40" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="265" cy="18" r="3" fill="white" stroke="#dc2626" stroke-width="2"/>
+          <circle cx="290" cy="15" r="4" fill="#dc2626"/>
+          <text x="12"  y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Sep</text>
+          <text x="56"  y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Oct</text>
+          <text x="105" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Nov</text>
+          <text x="155" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Dec</text>
+          <text x="205" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Jan</text>
+          <text x="255" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Feb</text>
+          <text x="278" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Mar</text>
+          <text x="246" y="13" fill="#dc2626" font-size="9" font-family="JetBrains Mono" font-weight="600">19.2 ⬆</text>
+        </svg>
+        <div class="alrt err" style="margin-top:10px;margin-bottom:0"><span class="ai">⚠️</span><div>Latest value 19.2 g/dL is above normal range (12–17 g/dL).</div></div>
+      </div>
     </div>
+    <div id="pat-health" style="display:none">
+      <div class="shd"><div><h2>Medical History</h2></div></div>
+      <div class="card"><div class="card-hd" style="color:var(--red)">Chronic Conditions</div>
+        <div class="chk on"><div class="chkb" style="background:var(--red);border-color:var(--red)">✓</div><span style="font-size:13px">Polycythaemia Vera</span></div>
+        <div class="chk on"><div class="chkb" style="background:var(--red);border-color:var(--red)">✓</div><span style="font-size:13px">Hypertension</span></div>
+      </div>
+      <div class="card"><div class="card-hd" style="color:var(--amber)">Allergies</div>
+        <div class="chk on"><div class="chkb" style="background:var(--amber);border-color:var(--amber)">✓</div><span style="font-size:13px">Penicillin</span></div>
+        <div class="chk on"><div class="chkb" style="background:var(--amber);border-color:var(--amber)">✓</div><span style="font-size:13px">Latex</span></div>
+      </div>
+      <div class="card"><div class="card-hd" style="color:var(--green)">Current Medication</div>
+        <div class="chk on"><div class="chkb" style="background:var(--green);border-color:var(--green)">✓</div><span style="font-size:13px">Hydroxyurea 500mg daily</span></div>
+        <div class="chk on"><div class="chkb" style="background:var(--green);border-color:var(--green)">✓</div><span style="font-size:13px">Aspirin 100mg daily</span></div>
+      </div>
+    </div>
+    <div id="pat-access" style="display:none">
+      <div class="shd"><div><h2>Doctor Access</h2><div class="ss">Control who can view your results</div></div></div>
+      <div class="card">
+        <div class="lrow"><div class="lic tl">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Amahle Dlamini</div><div class="ls">MP0123456 · Haematologist</div></div><div class="le"><button class="btn bdr" style="font-size:11px">Revoke</button></div></div>
+        <div class="lrow"><div class="lic tl">👩‍⚕️</div><div class="lb"><div class="lt">Dr. Johan Pretorius</div><div class="ls">MP0234567 · Haematologist</div></div><div class="le"><button class="btn bdr" style="font-size:11px">Revoke</button></div></div>
+      </div>
+      <button class="btn bt bfull">+ Grant Access to Doctor</button>
+    </div>
+    <div id="pat-profile" style="display:none">
+      <div class="shd"><div><h2>My Profile</h2></div></div>
+      <div class="card">
+        <div class="lrow"><div class="lb"><div class="lt">Thabo Sithole</div><div class="ls">thabo.sithole@email.co.za</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">SA ID Number</div><div class="ls" style="font-family:'JetBrains Mono',monospace">9504125067082</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">Date of Birth</div><div class="ls">12 April 1985</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">Contact Number</div><div class="ls">+27 82 456 7890</div></div></div>
+        <div class="lrow"><div class="lb"><div class="lt">Home Address</div><div class="ls">14 Beach Road, Summerstrand, Gqeberha</div></div></div>
+      </div>
+      <div style="display:flex;gap:8px"><button class="btn bg" style="flex:1">Change Password</button><button class="btn bg" style="flex:1">Edit Profile</button></div>
+    </div>
+  </div>
+  <nav class="btmnav">
+    <button class="bni on" onclick="pT('home',this)"><span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="bni" onclick="pT('health',this)"><span class="ni">🩺</span><span class="nl">Health</span></button>
+    <button class="bni" onclick="pT('access',this)"><span class="ni">🔐</span><span class="nl">Access</span></button>
+    <button class="bni" onclick="pT('profile',this)"><span class="ni">👤</span><span class="nl">Profile</span></button>
+  </nav>
+</div>
 </div>
 
-<!-- ========== PATIENT DASHBOARD ========== -->
-<div id="patientPage" class="page">
-    <div class="app-layout">
-        <aside class="sidebar" style="--accent:#059669">
-            <div class="sidebar-brand">
-                <div class="brand-dot" style="background:#059669"></div>
-                <span>NMB Lab</span>
-            </div>
-            <nav class="sidebar-nav">
-                <a class="nav-item active" onclick="showTab('patient','overview')">📊 My Overview</a>
-                <a class="nav-item" onclick="showTab('patient','results')">📄 My Results</a>
-                <a class="nav-item" onclick="showTab('patient','history')">📅 History</a>
-                <a class="nav-item" onclick="showTab('patient','consent')">✍️ Consent</a>
-            </nav>
-            <div class="sidebar-user">
-                <div class="user-avatar" style="background:#d1fae5;color:#059669">JM</div>
-                <div>
-                    <div class="user-name">James Mokoena</div>
-                    <div class="user-role">Patient</div>
-                </div>
-            </div>
-            <button class="btn-logout" onclick="logout()">← Logout</button>
-        </aside>
-        <main class="main-content">
-
-            <!-- PATIENT OVERVIEW -->
-            <div id="patient-overview" class="tab-content active">
-                <div class="page-header">
-                    <h2>Welcome, James 👋</h2>
-                    <p>View your test results and manage your consent settings</p>
-                </div>
-                <div class="stats-row">
-                    <div class="stat-card" style="--c:#059669">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-val">5</div>
-                        <div class="stat-lbl">Total Tests</div>
-                    </div>
-                    <div class="stat-card" style="--c:#2563eb">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-val">3</div>
-                        <div class="stat-lbl">Results Ready</div>
-                    </div>
-                    <div class="stat-card" style="--c:#d97706">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-val">2</div>
-                        <div class="stat-lbl">Awaiting</div>
-                    </div>
-                    <div class="stat-card" style="--c:#dc2626">
-                        <div class="stat-icon">🚨</div>
-                        <div class="stat-val">1</div>
-                        <div class="stat-lbl">Needs Attention</div>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <h3>Latest Test Notifications</h3>
-                    <div class="notification-list">
-                        <div class="notif notif-urgent">🚨 Your Full Blood Count results show a critical platelet value. Please contact your doctor immediately.</div>
-                        <div class="notif notif-info">📄 Your Differential Count results are now available. Authorised by Dr. Sarah Nkosi.</div>
-                        <div class="notif notif-success">✅ Your Blood Grouping results are ready. You are blood group O Positive.</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PATIENT RESULTS -->
-            <div id="patient-results" class="tab-content">
-                <div class="page-header">
-                    <h2>My Test Results</h2>
-                    <p>Your authorised test results are shown below</p>
-                </div>
-                <div class="section-card">
-                    <h3>Full Blood Count — 04 March 2026</h3>
-                    <p style="color:#6b7280;font-size:0.88rem;margin-bottom:20px">Requested by: Dr. Sarah Nkosi | Status: <span class="badge badge-critical">Critical Flag</span></p>
-                    <table class="data-table results-table">
-                        <thead><tr><th>Test</th><th>Your Result</th><th>Units</th><th>Normal Range</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td>Haemoglobin</td><td>8.5</td><td>g/dL</td><td>13.5 – 17.5</td><td><span class="flag-low">LOW</span></td></tr>
-                            <tr><td>White Blood Cells</td><td>11.8</td><td>x10⁹/L</td><td>4.0 – 11.0</td><td><span class="flag-high">HIGH</span></td></tr>
-                            <tr><td>Platelets</td><td>48</td><td>x10⁹/L</td><td>150 – 400</td><td><span class="flag-critical">CRITICAL</span></td></tr>
-                            <tr><td>Lymphocytes</td><td>1.8</td><td>x10⁹/L</td><td>1.0 – 4.0</td><td><span class="flag-normal">NORMAL</span></td></tr>
-                        </tbody>
-                    </table>
-                    <div class="result-comment" style="background:#fef2f2;border-color:#fca5a5">
-                        ⚠️ <strong>Important:</strong> One or more of your results require urgent medical attention. Please contact your doctor as soon as possible.
-                    </div>
-                </div>
-            </div>
-
-            <!-- PATIENT HISTORY -->
-            <div id="patient-history" class="tab-content">
-                <div class="page-header">
-                    <h2>Test History</h2>
-                    <p>All your previous tests and results</p>
-                </div>
-                <div class="section-card">
-                    <table class="data-table">
-                        <thead><tr><th>Date</th><th>Test Name</th><th>Requested By</th><th>Result</th></tr></thead>
-                        <tbody>
-                            <tr><td>04 Mar 2026</td><td>Full Blood Count</td><td>Dr. S. Nkosi</td><td><span class="badge badge-critical">Critical</span></td></tr>
-                            <tr><td>15 Feb 2026</td><td>Differential Count</td><td>Dr. S. Nkosi</td><td><span class="badge badge-ready">Normal</span></td></tr>
-                            <tr><td>10 Jan 2026</td><td>Blood Grouping</td><td>Dr. P. Adams</td><td><span class="badge badge-ready">Normal</span></td></tr>
-                            <tr><td>05 Dec 2025</td><td>Coagulation Panel</td><td>Dr. S. Nkosi</td><td><span class="badge badge-ready">Normal</span></td></tr>
-                            <tr><td>20 Nov 2025</td><td>Full Blood Count</td><td>Dr. P. Adams</td><td><span class="badge badge-ready">Normal</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- PATIENT CONSENT -->
-            <div id="patient-consent" class="tab-content">
-                <div class="page-header">
-                    <h2>Consent Management</h2>
-                    <p>Control who can access your medical information</p>
-                </div>
-                <div class="section-card">
-                    <h3>Current Consent Settings</h3>
-                    <div class="consent-list">
-                        <div class="consent-item">
-                            <div>
-                                <strong>Dr. Sarah Nkosi</strong>
-                                <p>Full access to all test results and history</p>
-                            </div>
-                            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-                        </div>
-                        <div class="consent-item">
-                            <div>
-                                <strong>Dr. Peter Adams</strong>
-                                <p>View results only — no history access</p>
-                            </div>
-                            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-                        </div>
-                        <div class="consent-item">
-                            <div>
-                                <strong>Laboratory Staff</strong>
-                                <p>Access to process and view samples</p>
-                            </div>
-                            <label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label>
-                        </div>
-                        <div class="consent-item">
-                            <div>
-                                <strong>Research Department</strong>
-                                <p>Anonymous data use for research purposes</p>
-                            </div>
-                            <label class="toggle"><input type="checkbox" /><span class="toggle-slider"></span></label>
-                        </div>
-                    </div>
-                    <div class="form-actions" style="margin-top:20px">
-                        <button class="btn-primary" onclick="alert('Consent settings saved successfully')">Save Consent Settings</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
+<div class="app">
+  <div class="topbar">
+    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
+    <div class="tb-r"><span class="chip admin">⚙️ Admin</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
+  </div>
+  <div class="content">
+    <div class="wbn"><h3>Admin Console ⚙️</h3><p>Manage reference data for the system</p></div>
+    <div class="sgrid">
+      <div class="scard"><div class="sn" style="color:var(--red)">42</div><div class="sl">Conditions</div></div>
+      <div class="scard"><div class="sn" style="color:var(--amber)">67</div><div class="sl">Allergies</div></div>
+      <div class="scard"><div class="sn" style="color:var(--green)">189</div><div class="sl">Medications</div></div>
+      <div class="scard"><div class="sn" style="color:var(--teal)">5</div><div class="sl">Sample Types</div></div>
     </div>
+    <div class="shd"><div><h2>Reference Data</h2></div></div>
+    <div class="card">
+      <div class="lrow"><div class="lic rd">🏥</div><div class="lb"><div class="lt">Medical Conditions</div><div class="ls">42 conditions · 6 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+      <div class="lrow"><div class="lic am">⚠️</div><div class="lb"><div class="lt">Allergies</div><div class="ls">67 entries · 4 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+      <div class="lrow"><div class="lic gn">💊</div><div class="lb"><div class="lt">Medications</div><div class="ls">189 medications · 12 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+      <div class="lrow"><div class="lic tl">🩸</div><div class="lb"><div class="lt">Sample Types</div><div class="ls">Whole Blood, Plasma, Serum, Bone Marrow, Urine</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+      <div class="lrow"><div class="lic nv">📐</div><div class="lb"><div class="lt">Units of Measurement</div><div class="ls">µL, g/dL, x10³/µL, seconds, %…</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+    </div>
+  </div>
+</div>
 </div>
 
-<!-- ========== LAB TECHNICIAN DASHBOARD ========== -->
-<div id="techPage" class="page">
-    <div class="app-layout">
-        <aside class="sidebar" style="--accent:#7c3aed">
-            <div class="sidebar-brand">
-                <div class="brand-dot" style="background:#7c3aed"></div>
-                <span>NMB Lab</span>
-            </div>
-            <nav class="sidebar-nav">
-                <a class="nav-item active" onclick="showTab('tech','overview')">📊 Overview</a>
-                <a class="nav-item" onclick="showTab('tech','samples')">🧪 Samples Queue</a>
-                <a class="nav-item" onclick="showTab('tech','capture')">📝 Capture Results</a>
-                <a class="nav-item" onclick="showTab('tech','verify')">✅ Verify & Authorise</a>
-            </nav>
-            <div class="sidebar-user">
-                <div class="user-avatar" style="background:#ede9fe;color:#7c3aed">TB</div>
-                <div>
-                    <div class="user-name">T. Botha</div>
-                    <div class="user-role">Lab Technician</div>
-                </div>
-            </div>
-            <button class="btn-logout" onclick="logout()">← Logout</button>
-        </aside>
-        <main class="main-content">
+<!-- MODALS -->
+<div class="ov" id="m-newreq" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📋 New Test Request</div>
+  <div class="frow"><label>Patient</label><select><option>Thabo Sithole (9504125067082)</option><option>Nomsa Dube</option><option>Pieter de Wet</option><option>Aisha Khan</option></select></div>
+  <div class="frow"><label>Urgency</label><select><option>Routine</option><option>Urgent</option><option>STAT</option></select></div>
+  <div class="frow"><label>Clinical Notes</label><textarea placeholder="Enter relevant clinical information..."></textarea></div>
+  <div class="frow"><label>Test Types</label>
+    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Full Blood Count (FBC) — EDTA Tube</span></div>
+    <div class="chk" onclick="tC(this)"><div class="chkb"></div><span style="font-size:13px">Differential Count — EDTA Tube</span></div>
+    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Coagulation Studies — Citrate Tube</span></div>
+  </div>
+  <div class="alrt inf" style="margin:10px 0"><span class="ai">📦</span><div><strong>Samples needed:</strong> 1× EDTA Tube, 1× Citrate Tube</div></div>
+  <div class="frow"><label>Sample Barcode(s)</label><input type="text" placeholder="e.g. BC2026-00412" style="font-family:'JetBrains Mono',monospace"></div>
+  <button class="btn bp bfull" onclick="doSub()">Submit Request →</button>
+</div></div>
 
-            <!-- TECH OVERVIEW -->
-            <div id="tech-overview" class="tab-content active">
-                <div class="page-header">
-                    <h2>Lab Technician Dashboard 🔬</h2>
-                    <p>Today's sample queue and processing status</p>
-                </div>
-                <div class="stats-row">
-                    <div class="stat-card" style="--c:#7c3aed">
-                        <div class="stat-icon">🧪</div>
-                        <div class="stat-val">18</div>
-                        <div class="stat-lbl">Samples Today</div>
-                    </div>
-                    <div class="stat-card" style="--c:#d97706">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-val">6</div>
-                        <div class="stat-lbl">In Queue</div>
-                    </div>
-                    <div class="stat-card" style="--c:#059669">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-val">10</div>
-                        <div class="stat-lbl">Processed</div>
-                    </div>
-                    <div class="stat-card" style="--c:#dc2626">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-val">2</div>
-                        <div class="stat-lbl">Rejected</div>
-                    </div>
-                </div>
-                <div class="section-card">
-                    <h3>Urgent Samples — Requires Immediate Attention</h3>
-                    <div class="urgent-list">
-                        <div class="urgent-item">
-                            <div class="urgent-dot"></div>
-                            <div>
-                                <strong>Sample #S-2026-044</strong> — James Mokoena
-                                <p>Critical platelet value detected. Awaiting authorisation.</p>
-                            </div>
-                            <button class="btn-small btn-urgent" onclick="showTab('tech','verify')">Authorise</button>
-                        </div>
-                        <div class="urgent-item">
-                            <div class="urgent-dot"></div>
-                            <div>
-                                <strong>Sample #S-2026-041</strong> — Nomsa Zulu
-                                <p>Haemolysed sample received. Rejection required.</p>
-                            </div>
-                            <button class="btn-small" onclick="alert('Sample rejected. Ward notified.')">Reject</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="ov" id="m-results" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📊 Results — REQ-2026-0847</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="pill com">Completed</span><span style="font-size:12px;color:var(--text3)">Thabo Sithole · 5 Mar 2026</span></div>
+  <div class="alrt err" style="margin-bottom:14px"><span class="ai">⚠️</span><div><strong>2 abnormal values</strong> in this result set.</div></div>
+  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
+  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+  <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">Normal</div></div></div>
+  <div class="divider"></div>
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Status Timeline</div>
+  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Submitted</div><div class="tbs">5 Mar 2026 · 08:15</div></div></div>
+  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Samples Received</div><div class="tbs">5 Mar 2026 · 09:02</div></div></div>
+  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">In Progress</div><div class="tbs">5 Mar 2026 · 09:30</div></div></div>
+  <div class="tl-row"><div class="tl-l"><div class="tl-d now"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Completed &amp; Verified</div><div class="tbs">5 Mar 2026 · 11:45</div></div></div>
+  <div class="tl-row"><div class="tl-l"><div class="tl-d"></div></div><div class="tl-b"><div class="tbl" style="color:var(--text3)">Released to Patient</div><div class="tbs">Pending</div></div></div>
+  <button class="btn bp bfull" style="margin-top:14px" onclick="closeM('m-results');openM('m-release')">Release to Patient →</button>
+</div></div>
 
-            <!-- TECH SAMPLES QUEUE -->
-            <div id="tech-samples" class="tab-content">
-                <div class="page-header">
-                    <h2>Samples Queue</h2>
-                    <p>All received samples and their current processing status</p>
-                </div>
-                <div class="section-card">
-                    <table class="data-table">
-                        <thead><tr><th>Sample ID</th><th>Patient</th><th>Test</th><th>Tube Type</th><th>Received</th><th>Condition</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td>#S-2026-044</td><td>James Mokoena</td><td>FBC</td><td>🟣 EDTA</td><td>08:15</td><td><span class="badge badge-ready">Good</span></td><td><span class="badge badge-processing">Processing</span></td></tr>
-                            <tr><td>#S-2026-043</td><td>Amahle Dube</td><td>PT / APTT</td><td>🔵 Citrate</td><td>08:32</td><td><span class="badge badge-ready">Good</span></td><td><span class="badge badge-pending">Queued</span></td></tr>
-                            <tr><td>#S-2026-042</td><td>Sipho Khumalo</td><td>Diff Count</td><td>🟣 EDTA</td><td>08:45</td><td><span class="badge badge-ready">Good</span></td><td><span class="badge badge-ready">Complete</span></td></tr>
-                            <tr><td>#S-2026-041</td><td>Nomsa Zulu</td><td>Blood Group</td><td>🔴 SST</td><td>09:00</td><td><span class="badge badge-critical">Haemolysed</span></td><td><span class="badge badge-critical">Rejected</span></td></tr>
-                            <tr><td>#S-2026-040</td><td>David Peters</td><td>Bone Marrow</td><td>🟢 Syringe</td><td>09:20</td><td><span class="badge badge-ready">Good</span></td><td><span class="badge badge-processing">Processing</span></td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div class="ov" id="m-release" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📤 Release Results</div>
+  <div class="frow"><label>Note to Patient</label><textarea>Your Haemoglobin is elevated and your platelet count is low. Please book an urgent appointment to discuss these results.</textarea></div>
+  <div class="frow"><label>Notification</label>
+    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Email results PDF to patient</span></div>
+    <div class="chk" onclick="tC(this)"><div class="chkb"></div><span style="font-size:13px">Email patient to book appointment</span></div>
+  </div>
+  <button class="btn bp bfull" onclick="doRel()">Confirm Release →</button>
+</div></div>
 
-            <!-- TECH CAPTURE RESULTS -->
-            <div id="tech-capture" class="tab-content">
-                <div class="page-header">
-                    <h2>Capture Results</h2>
-                    <p>Enter test results for processed samples</p>
-                </div>
-                <div class="form-card">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Sample ID</label>
-                            <input type="text" class="form-input" value="#S-2026-044" />
-                        </div>
-                        <div class="form-group">
-                            <label>Patient Name</label>
-                            <input type="text" class="form-input" value="James Mokoena" readonly />
-                        </div>
-                        <div class="form-group">
-                            <label>Analyser Used</label>
-                            <select class="form-input">
-                                <option>Sysmex XN-1000</option>
-                                <option>Coulter DxH 900</option>
-                                <option>Mindray BC-6800</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Analysis Time</label>
-                            <input type="time" class="form-input" value="10:30" />
-                        </div>
-                    </div>
+<div class="ov" id="m-receive" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📥 Receive Sample</div>
+  <div style="background:var(--teal-l);border:1px solid var(--teal-m);border-radius:var(--r-sm);padding:12px;margin-bottom:16px">
+    <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.6px">Request</div>
+    <div style="font-size:15px;font-weight:700;margin-top:2px">REQ-2026-0850 · Aisha Khan</div>
+    <div style="font-size:12px;color:var(--text2);margin-top:2px">Coagulation Studies · Routine</div>
+  </div>
+  <div class="frow"><label>Technician Receiving</label><select><option>Zanele Mokoena (EMP-0041)</option></select></div>
+  <div class="frow"><label>Sample Barcode</label><input type="text" value="BC2026-00450" style="font-family:'JetBrains Mono',monospace"></div>
+  <div class="frow"><label>Sample Type</label><select><option>Citrate Tube (5ml)</option><option>EDTA Tube (3ml)</option></select></div>
+  <div class="frow"><label>Date &amp; Time Received</label><input type="datetime-local" value="2026-03-06T07:42"></div>
+  <button class="btn bp bfull" onclick="doRec()">Confirm Receipt →</button>
+</div></div>
 
-                    <div class="form-section-title" style="margin-top:20px">Enter Results</div>
-                    <table class="data-table" style="margin-top:12px">
-                        <thead><tr><th>Parameter</th><th>Result</th><th>Units</th><th>Ref Range</th></tr></thead>
-                        <tbody>
-                            <tr><td>Haemoglobin</td><td><input type="text" class="form-input inline-input" value="8.5" /></td><td>g/dL</td><td>13.5–17.5</td></tr>
-                            <tr><td>RBC Count</td><td><input type="text" class="form-input inline-input" value="3.2" /></td><td>x10¹²/L</td><td>4.5–5.5</td></tr>
-                            <tr><td>WBC Count</td><td><input type="text" class="form-input inline-input" value="11.8" /></td><td>x10⁹/L</td><td>4.0–11.0</td></tr>
-                            <tr><td>Platelets</td><td><input type="text" class="form-input inline-input" value="48" /></td><td>x10⁹/L</td><td>150–400</td></tr>
-                            <tr><td>MCV</td><td><input type="text" class="form-input inline-input" value="72" /></td><td>fL</td><td>80–100</td></tr>
-                        </tbody>
-                    </table>
+<div class="ov" id="m-capture" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">🔬 Capture Result</div>
+  <div class="alrt err" style="margin-bottom:12px"><span class="ai">🚨</span><div><strong>STAT · Pieter de Wet · REQ-2026-0849</strong> — Differential Count</div></div>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.6">
+    <strong style="color:var(--red)">⚠️ Conditions:</strong> Thrombocytopenia<br>
+    <strong style="color:var(--amber)">💊 Medication:</strong> Warfarin 5mg daily<br>
+    <strong style="color:var(--red)">🚫 Allergy:</strong> Aspirin<br>
+    <strong style="color:var(--teal)">📝 Notes:</strong> Post-chemo cycle 3. Possible blast crisis.
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="frow"><label>Neutrophils (%)</label><input type="number" value="68"></div>
+    <div class="frow"><label>Lymphocytes (%)</label><input type="number" value="22"></div>
+    <div class="frow"><label>Monocytes (%)</label><input type="number" value="5"></div>
+    <div class="frow"><label>Eosinophils (%)</label><input type="number" value="3"></div>
+    <div class="frow" style="grid-column:1/-1"><label>Blasts (%)</label><input type="number" value="2" style="border-color:var(--red)"></div>
+  </div>
+  <div class="alrt err" style="margin-bottom:12px"><span class="ai">⚠️</span><div>Blasts (2%) above normal (0%). <strong>Auto-flagged ABNORMAL.</strong></div></div>
+  <div class="frow"><label>Notes</label><textarea>Blasts noted on slide review. Recommend haematologist review urgently.</textarea></div>
+  <button class="btn bp bfull" onclick="doSave()">Save Result →</button>
+</div></div>
 
-                    <div class="form-group" style="margin-top:20px">
-                        <label>Technologist Comments</label>
-                        <textarea class="form-input" rows="3" placeholder="Add any comments about this result..."></textarea>
-                    </div>
+<div class="ov" id="m-verify" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">✅ Verify Result</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">FBC · Thabo Sithole · Captured by Sipho Khumalo</div>
+  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
+  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
+  <div style="display:flex;gap:8px;margin-top:14px">
+    <button class="btn bp" style="flex:1;padding:12px" onclick="doVer()">✓ Approve &amp; Verify</button>
+    <button class="btn bdr" style="flex:1;padding:12px" onclick="doRet()">↩ Return</button>
+  </div>
+</div></div>
 
-                    <div class="form-actions">
-                        <button class="btn-secondary">Save Draft</button>
-                        <button class="btn-primary" onclick="alert('Results saved and sent for verification')">Save & Send for Verification →</button>
-                    </div>
-                </div>
-            </div>
+<div class="ov" id="m-patres" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📊 My Results — REQ-0847</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Dr. Amahle Dlamini · 5 March 2026</div>
+  <div style="background:var(--teal-l);border-left:3px solid var(--teal);padding:12px;border-radius:0 var(--r-sm) var(--r-sm) 0;margin-bottom:14px;font-size:13px">
+    <strong style="color:var(--teal)">Doctor's Note:</strong><br>Your Haemoglobin is elevated and your platelet count is low. Please book an urgent appointment.
+  </div>
+  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">⚠️ HIGH</div></div></div>
+  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">✓ Normal</div></div></div>
+  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">⚠️ LOW</div></div></div>
+  <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">✓ Normal</div></div></div>
+  <button class="btn bg bfull" style="margin-top:14px">📄 Download PDF Report</button>
+</div></div>
 
-            <!-- TECH VERIFY -->
-            <div id="tech-verify" class="tab-content">
-                <div class="page-header">
-                    <h2>Verify and Authorise Results</h2>
-                    <p>Review results before releasing them to the doctor</p>
-                </div>
-                <div class="section-card">
-                    <div class="verify-header">
-                        <h3>Sample #S-2026-044 — James Mokoena</h3>
-                        <span class="badge badge-critical">⚠️ Critical Value Detected</span>
-                    </div>
-                    <table class="data-table results-table" style="margin-top:16px">
-                        <thead><tr><th>Test</th><th>Result</th><th>Units</th><th>Ref Range</th><th>Flag</th></tr></thead>
-                        <tbody>
-                            <tr><td>Haemoglobin</td><td>8.5</td><td>g/dL</td><td>13.5–17.5</td><td><span class="flag-low">L</span></td></tr>
-                            <tr><td>WBC Count</td><td>11.8</td><td>x10⁹/L</td><td>4.0–11.0</td><td><span class="flag-high">H</span></td></tr>
-                            <tr><td>Platelets</td><td>48</td><td>x10⁹/L</td><td>150–400</td><td><span class="flag-critical">CRIT</span></td></tr>
-                            <tr><td>MCV</td><td>72</td><td>fL</td><td>80–100</td><td><span class="flag-low">L</span></td></tr>
-                        </tbody>
-                    </table>
-                    <div class="critical-warning">
-                        🚨 <strong>Critical Value Alert:</strong> Platelet count of 48 x10⁹/L is critically low. Doctor must be notified immediately before authorisation.
-                    </div>
-                    <div class="form-group" style="margin-top:16px">
-                        <label>Authorisation Comment (required for critical values)</label>
-                        <textarea class="form-input" rows="3" placeholder="e.g. Doctor notified at 10:45. Urgent review requested..."></textarea>
-                    </div>
-                    <div class="form-actions">
-                        <button class="btn-secondary" onclick="alert('Result sent back for re-analysis')">Request Re-analysis</button>
-                        <button class="btn-primary" onclick="alert('Result authorised and released to Dr. Nkosi')">Authorise and Release →</button>
-                    </div>
-                </div>
-            </div>
+<div class="ov" id="m-addtest" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">🧬 Add Test Type</div>
+  <div class="frow"><label>Test Name</label><input type="text" placeholder="e.g. Reticulocyte Count"></div>
+  <div class="frow"><label>Category</label><select><option>Full Blood Count</option><option>Differential Count</option><option>Coagulation Studies</option></select></div>
+  <div class="frow"><label>Sample Type</label><select><option>Whole Blood (EDTA)</option><option>Plasma (Citrate)</option><option>Bone Marrow</option></select></div>
+  <div class="frow"><label>Units</label><input type="text" placeholder="e.g. x10³/µL"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="frow"><label>Normal Min</label><input type="number" placeholder="0.5"></div>
+    <div class="frow"><label>Normal Max</label><input type="number" placeholder="2.0"></div>
+  </div>
+  <div class="frow"><label>Turnaround Time (min)</label><input type="number" placeholder="45"></div>
+  <button class="btn bp bfull">Save Test Type →</button>
+</div></div>
 
-        </main>
-    </div>
-</div>
+<div class="ov" id="m-order" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">📦 Create Stock Order</div>
+  <div class="alrt wrn" style="margin-bottom:12px"><span class="ai">⚠️</span><div><strong>3 items</strong> at or below reorder level.</div></div>
+  <div class="frow"><label>Supplier</label><select><option>BioTech Supplies</option><option>MedLab SA</option></select></div>
+  <div class="frow"><label>Order Number</label><input type="text" value="ORD-2026-043" style="font-family:'JetBrains Mono',monospace"></div>
+  <div class="frow"><label>Items</label>
+    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><div><div style="font-size:13px">EDTA Tubes (3ml)</div><div style="font-size:11px;color:var(--text2)">On hand: 42 · Reorder: 500</div></div></div>
+    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><div><div style="font-size:13px">Citrate Tubes (5ml)</div><div style="font-size:11px;color:var(--text2)">On hand: 11 · Reorder: 300</div></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="frow"><label>Qty (EDTA)</label><input type="number" value="1000"></div>
+    <div class="frow"><label>Qty (Citrate)</label><input type="number" value="600"></div>
+  </div>
+  <button class="btn bp bfull">📧 Place Order &amp; Email Supplier →</button>
+</div></div>
 
-<!-- ========== MANAGER DASHBOARD ========== -->
-<div id="managerPage" class="page">
-    <div class="app-layout">
-        <aside class="sidebar" style="--accent:#b45309">
-            <div class="sidebar-brand">
-                <div class="brand-dot" style="background:#b45309"></div>
-                <span>NMB Lab</span>
-            </div>
-            <nav class="sidebar-nav">
-                <a class="nav-item active" onclick="showTab('manager','overview')">📊 Dashboard</a>
-                <a class="nav-item" onclick="showTab('manager','reports')">📈 Reports</a>
-                <a class="nav-item" onclick="showTab('manager','staff')">👥 Staff</a>
-                <a class="nav-item" onclick="showTab('manager','audit')">🔍 Audit Trail</a>
-            </nav>
-            <div class="sidebar-user">
-                <div class="user-avatar" style="background:#fef3c7;color:#b45309">MM</div>
-                <div>
-                    <div class="user-name">M. Mahlangu</div>
-                    <div class="user-role">Lab Manager</div>
-                </div>
-            </div>
-            <button class="btn-logout" onclick="logout()">← Logout</button>
-        </aside>
-        <main class="main-content">
+<div class="ov" id="m-addstaff" onclick="bgC(event,this)"><div class="sh">
+  <div class="sh-handle"></div><div class="sh-title">👤 Add Staff Member</div>
+  <div class="tabs"><button class="tab on">Doctor</button><button class="tab">Technician</button></div>
+  <div class="frow"><label>First Name</label><input type="text" placeholder="Name"></div>
+  <div class="frow"><label>Surname</label><input type="text" placeholder="Surname"></div>
+  <div class="frow"><label>HPCSA Number</label><input type="text" placeholder="MP0000000" style="font-family:'JetBrains Mono',monospace"></div>
+  <div class="frow"><label>Email Address</label><input type="email" placeholder="doctor@clinic.co.za"></div>
+  <div class="frow"><label>Contact Number</label><input type="tel" placeholder="+27 82 000 0000"></div>
+  <div class="alrt inf" style="margin-bottom:14px"><span class="ai">📧</span><div>Auto-generated password will be emailed. Doctor must change it on first login.</div></div>
+  <button class="btn bp bfull">Create Account &amp; Send Password →</button>
+</div></div>
 
-            <!-- MANAGER OVERVIEW -->
-            <div id="manager-overview" class="tab-content active">
-                <div class="page-header">
-                    <h2>Lab Manager Dashboard 📊</h2>
-                    <p>Overview of laboratory performance and statistics</p>
-                </div>
-                <div class="stats-row">
-                    <div class="stat-card" style="--c:#b45309">
-                        <div class="stat-icon">🧪</div>
-                        <div class="stat-val">247</div>
-                        <div class="stat-lbl">Tests This Month</div>
-                    </div>
-                    <div class="stat-card" style="--c:#059669">
-                        <div class="stat-icon">⏱️</div>
-                        <div class="stat-val">98.2%</div>
-                        <div class="stat-lbl">TAT Compliance</div>
-                    </div>
-                    <div class="stat-card" style="--c:#dc2626">
-                        <div class="stat-icon">❌</div>
-                        <div class="stat-val">3</div>
-                        <div class="stat-lbl">Rejections Today</div>
-                    </div>
-                    <div class="stat-card" style="--c:#2563eb">
-                        <div class="stat-icon">👥</div>
-                        <div class="stat-val">8</div>
-                        <div class="stat-lbl">Staff On Duty</div>
-                    </div>
-                </div>
+<div id="toast"></div>
 
-                <div class="two-col">
-                    <div class="section-card">
-                        <h3>Test Volume by Category</h3>
-                        <div class="bar-chart">
-                            <div class="bar-row"><span>FBC</span><div class="bar-track"><div class="bar-fill" style="width:85%;background:#2563eb"></div></div><span>85</span></div>
-                            <div class="bar-row"><span>Coagulation</span><div class="bar-track"><div class="bar-fill" style="width:45%;background:#7c3aed"></div></div><span>45</span></div>
-                            <div class="bar-row"><span>Blood Group</span><div class="bar-track"><div class="bar-fill" style="width:38%;background:#059669"></div></div><span>38</span></div>
-                            <div class="bar-row"><span>Diff Count</span><div class="bar-track"><div class="bar-fill" style="width:52%;background:#d97706"></div></div><span>52</span></div>
-                            <div class="bar-row"><span>Bone Marrow</span><div class="bar-track"><div class="bar-fill" style="width:15%;background:#dc2626"></div></div><span>15</span></div>
-                            <div class="bar-row"><span>Special Tests</span><div class="bar-track"><div class="bar-fill" style="width:12%;background:#b45309"></div></div><span>12</span></div>
-                        </div>
-                    </div>
-                    <div class="section-card">
-                        <h3>Sample Rejection Reasons</h3>
-                        <div class="rejection-list">
-                            <div class="rejection-item"><span>Haemolysis</span><span class="rej-count" style="background:#fee2e2;color:#dc2626">8</span></div>
-                            <div class="rejection-item"><span>Clotted Sample</span><span class="rej-count" style="background:#fef3c7;color:#d97706">5</span></div>
-                            <div class="rejection-item"><span>Wrong Tube</span><span class="rej-count" style="background:#dbeafe;color:#2563eb">3</span></div>
-                            <div class="rejection-item"><span>Underfilled</span><span class="rej-count" style="background:#d1fae5;color:#059669">4</span></div>
-                            <div class="rejection-item"><span>No Label</span><span class="rej-count" style="background:#ede9fe;color:#7c3aed">2</span></div>
-                            <div class="rejection-item"><span>Contaminated</span><span class="rej-count" style="background:#fef3c7;color:#b45309">1</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MANAGER REPORTS -->
-            <div id="manager-reports" class="tab-content">
-                <div class="page-header">
-                    <h2>Reports and Statistics</h2>
-                    <p>Generate and download laboratory performance reports</p>
-                </div>
-                <div class="section-card">
-                    <h3>Monthly Performance Summary — March 2026</h3>
-                    <table class="data-table">
-                        <thead><tr><th>Metric</th><th>Target</th><th>Actual</th><th>Status</th></tr></thead>
-                        <tbody>
-                            <tr><td>Turnaround Time (FBC)</td><td>≤ 2 hours</td><td>1.8 hours</td><td><span class="badge badge-ready">✅ Met</span></td></tr>
-                            <tr><td>Sample Rejection Rate</td><td>≤ 2%</td><td>1.8%</td><td><span class="badge badge-ready">✅ Met</span></td></tr>
-                            <tr><td>Critical Value Notification</td><td>≤ 30 min</td><td>22 min</td><td><span class="badge badge-ready">✅ Met</span></td></tr>
-                            <tr><td>Result Authorisation Time</td><td>≤ 4 hours</td><td>3.5 hours</td><td><span class="badge badge-ready">✅ Met</span></td></tr>
-                            <tr><td>Staff Attendance</td><td>95%</td><td>91%</td><td><span class="badge badge-pending">⚠️ Below</span></td></tr>
-                        </tbody>
-                    </table>
-                    <div class="form-actions" style="margin-top:20px">
-                        <button class="btn-primary" onclick="alert('Monthly report downloaded as PDF')">⬇ Download Full Report</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MANAGER STAFF -->
-            <div id="manager-staff" class="tab-content">
-                <div class="page-header">
-                    <h2>Staff Management</h2>
-                    <p>View staff on duty and manage access roles</p>
-                </div>
-                <div class="section-card">
-                    <table class="data-table">
-                        <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Tests Today</th><th>Access Level</th></tr></thead>
-                        <tbody>
-                            <tr><td>T. Botha</td><td>Senior Technologist</td><td><span class="badge badge-ready">On Duty</span></td><td>12</td><td>Authorise Results</td></tr>
-                            <tr><td>L. Sithole</td><td>Lab Technician</td><td><span class="badge badge-ready">On Duty</span></td><td>8</td><td>Process Samples</td></tr>
-                            <tr><td>R. Joubert</td><td>Lab Receptionist</td><td><span class="badge badge-ready">On Duty</span></td><td>—</td><td>Log Samples</td></tr>
-                            <tr><td>N. Dlamini</td><td>Pathologist</td><td><span class="badge badge-pending">Off Duty</span></td><td>—</td><td>Full Access</td></tr>
-                            <tr><td>K. Swart</td><td>Lab Technician</td><td><span class="badge badge-ready">On Duty</span></td><td>6</td><td>Process Samples</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- MANAGER AUDIT -->
-            <div id="manager-audit" class="tab-content">
-                <div class="page-header">
-                    <h2>Audit Trail</h2>
-                    <p>Complete log of all system activity — tamper resistant</p>
-                </div>
-                <div class="section-card">
-                    <div class="audit-warning">
-                        🔒 This audit trail is read-only and cannot be modified or deleted by any user including administrators.
-                    </div>
-                    <table class="data-table" style="margin-top:16px">
-                        <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead>
-                        <tbody>
-                            <tr><td>10:45</td><td>T. Botha</td><td>Result Authorised</td><td>Sample #S-2026-044 — James Mokoena — FBC</td></tr>
-                            <tr><td>10:30</td><td>T. Botha</td><td>Results Captured</td><td>Sample #S-2026-044 — Critical platelet value flagged</td></tr>
-                            <tr><td>10:15</td><td>L. Sithole</td><td>Sample Rejected</td><td>Sample #S-2026-041 — Nomsa Zulu — Haemolysis detected</td></tr>
-                            <tr><td>09:55</td><td>R. Joubert</td><td>Sample Logged</td><td>Sample #S-2026-044 received from Ward 4B</td></tr>
-                            <tr><td>09:20</td><td>Dr. S. Nkosi</td><td>Request Submitted</td><td>FBC + Differential Count — James Mokoena</td></tr>
-                            <tr><td>08:45</td><td>L. Sithole</td><td>Sample Processed</td><td>Sample #S-2026-042 — Sipho Khumalo — Complete</td></tr>
-                            <tr><td>08:15</td><td>R. Joubert</td><td>Sample Logged</td><td>Sample #S-2026-043 received from Ward 2A</td></tr>
-                            <tr><td>07:55</td><td>M. Mahlangu</td><td>System Login</td><td>Manager login from IP 192.168.1.10</td></tr>
-                        </tbody>
-                    </table>
-                    <div class="form-actions" style="margin-top:16px">
-                        <button class="btn-primary" onclick="alert('Audit log exported')">⬇ Export Audit Log</button>
-                    </div>
-                </div>
-            </div>
-
-        </main>
-    </div>
-</div>
-
-<script src="script.js"></script>
+<script>
+const R={manager:{e:'manager@nmbhdl.co.za',s:'screen-manager'},doctor:{e:'dlamini@clinic.co.za',s:'screen-doctor'},tech:{e:'zanele@nmbhdl.co.za',s:'screen-tech'},patient:{e:'thabo@email.co.za',s:'screen-patient'},admin:{e:'admin@nmbhdl.co.za',s:'screen-admin'}};
+let cr='manager';
+function selRole(r,b){cr=r;document.querySelectorAll('.rpill').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById('l-email').value=R[r].e}
+function doLogin(){const s=R[cr].s;document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(s).classList.add('active');window.scrollTo(0,0)}
+function logout(){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('screen-login').classList.add('active');window.scrollTo(0,0)}
+function sw(pre,n,b,sel){document.querySelectorAll('[id^="'+pre+'-"]').forEach(e=>e.style.display='none');const e=document.getElementById(pre+'-'+n);if(e)e.style.display='';document.querySelectorAll(sel).forEach(x=>x.classList.remove('on'));if(b)b.classList.add('on')}
+function mT(n,b){sw('mgr',n,b,'#screen-manager .bni')}
+function dT(n,b){sw('doc',n,b,'#screen-doctor .bni')}
+function tT(n,b){sw('tech',n,b,'#screen-tech .bni')}
+function pT(n,b){sw('pat',n,b,'#screen-patient .bni')}
+function subT(b,id){b.closest('.tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');['st-docs','st-techs'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display=(e.id===id?'':'none')})}
+function openM(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeM(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function bgC(e,o){if(e.target===o){o.classList.remove('open');document.body.style.overflow=''}}
+function tC(el){el.classList.toggle('on');const b=el.querySelector('.chkb');b.textContent=el.classList.contains('on')?'✓':''}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200)}
+function doSub(){closeM('m-newreq');toast('✅ Request submitted! Patient notified via email.')}
+function doRel(){closeM('m-release');toast('📤 Results released! Email sent to patient.')}
+function doRec(){closeM('m-receive');toast('📥 Samples received. Request updated.')}
+function doSave(){closeM('m-capture');toast('🔬 Result saved. Awaiting verification.')}
+function doVer(){closeM('m-verify');toast('✅ Result verified! Doctor notified via email.')}
+function doRet(){closeM('m-verify');toast('↩ Result returned to technician with note.')}
+</script>
 </body>
 </html>
