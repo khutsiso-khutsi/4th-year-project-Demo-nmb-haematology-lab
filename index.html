@@ -1,796 +1,1433 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>NMB-HLabSys — Haematology Laboratory System</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NMB-HLabSys — Haematology Lab System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  --white:#ffffff;--bg:#f0f4f8;--surface:#ffffff;--surface2:#f7f9fc;
-  --border:#e2e8f0;--border2:#cbd5e1;
-  --navy:#0f2d4a;--navy2:#1e4168;
-  --teal:#0891b2;--teal-l:#e0f7fc;--teal-m:#b2ebf2;
-  --green:#059669;--green-l:#d1fae5;
-  --red:#dc2626;--red-l:#fee2e2;
-  --amber:#d97706;--amber-l:#fef3c7;
-  --purple:#7c3aed;--purple-l:#ede9fe;
-  --slate:#64748b;--slate2:#94a3b8;--slate3:#cbd5e1;
-  --text:#0f2d4a;--text2:#475569;--text3:#94a3b8;
-  --shadow-sm:0 1px 3px rgba(15,45,74,.06),0 1px 2px rgba(15,45,74,.04);
-  --shadow:0 4px 12px rgba(15,45,74,.08),0 2px 4px rgba(15,45,74,.04);
-  --shadow-lg:0 16px 40px rgba(15,45,74,.12),0 4px 12px rgba(15,45,74,.06);
-  --r:10px;--r-sm:7px;--r-lg:16px;
+  --bg: #0a0f1e;
+  --bg2: #111827;
+  --bg3: #1a2235;
+  --surface: #1e2d45;
+  --surface2: #243352;
+  --border: rgba(99,157,255,0.12);
+  --border2: rgba(99,157,255,0.22);
+  --accent: #4f8ef7;
+  --accent2: #7ab3ff;
+  --accent-glow: rgba(79,142,247,0.18);
+  --red: #f56565;
+  --green: #48bb78;
+  --amber: #f6ad55;
+  --purple: #9f7aea;
+  --teal: #38b2ac;
+  --text: #e8edf5;
+  --text2: #8fa3c0;
+  --text3: #5a7299;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--slate3);border-radius:4px}
-.screen{display:none;min-height:100vh;animation:sIn .3s ease}
-.screen.active{display:block}
-@keyframes sIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* LOGIN */
-#screen-login{min-height:100vh;display:none;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#e8f4fd 0%,#f0f4f8 40%,#e8f0fa 100%);position:relative;overflow:hidden}
-#screen-login.active{display:flex}
-#screen-login::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(8,145,178,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(8,145,178,.05) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
-.blob1{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(8,145,178,.08) 0%,transparent 65%);top:-150px;right:-100px;pointer-events:none}
-.blob2{position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(56,189,248,.06) 0%,transparent 65%);bottom:-80px;left:-60px;pointer-events:none}
-.lwrap{display:flex;background:var(--white);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden;width:100%;max-width:860px}
-.lsidebar{background:linear-gradient(160deg,var(--navy) 0%,var(--navy2) 100%);padding:48px 36px;width:300px;flex-shrink:0;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
-.lsidebar::after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;border:40px solid rgba(255,255,255,.04);bottom:-60px;right:-60px}
-.ls-logo{display:flex;align-items:center;gap:12px}
-.ls-mark{width:44px;height:44px;border-radius:12px;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ls-mark svg{width:22px;height:22px}
-.ls-brand .ls-name{font-size:18px;font-weight:800;letter-spacing:-.3px;color:white}
-.ls-brand .ls-sub{font-size:10px;opacity:.5;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;color:white}
-.ls-tag{color:white;margin-top:40px}
-.ls-tag h2{font-size:26px;font-weight:700;line-height:1.3;opacity:.95}
-.ls-tag p{font-size:13px;opacity:.5;margin-top:8px;line-height:1.6}
-.ls-sdg{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;margin-top:auto}
-.sdg-ico{width:32px;height:32px;border-radius:6px;background:#3c9b3a;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.sdg-txt{color:rgba(255,255,255,.7);font-size:11px}
-.sdg-txt strong{display:block;color:white;font-size:12px}
-.lfpanel{flex:1;padding:48px 40px;display:flex;flex-direction:column;justify-content:center}
-.lf-title{font-size:22px;font-weight:700;color:var(--text);margin-bottom:4px}
-.lf-sub{font-size:13px;color:var(--text2);margin-bottom:28px}
-.rgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
-.rpill{border:1.5px solid var(--border);background:var(--white);border-radius:var(--r-sm);padding:10px 6px;cursor:pointer;text-align:center;transition:all .18s;font-family:'Sora',sans-serif;color:var(--text2)}
-.rpill .ri{font-size:18px;display:block;margin-bottom:4px}
-.rpill .rl{font-size:10px;font-weight:600;letter-spacing:.5px}
-.rpill.on{border-color:var(--teal);background:var(--teal-l);color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
-.rpill:hover:not(.on){border-color:var(--slate2);background:var(--surface2)}
-.fld{margin-bottom:16px}
-.fld label{display:block;font-size:11px;font-weight:600;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px}
-.fld input{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:11px 14px;font-size:14px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s}
-.fld input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
-.fld input::placeholder{color:var(--slate2)}
-.btn-login{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:var(--r-sm);font-size:14px;font-weight:700;font-family:'Sora',sans-serif;cursor:pointer;letter-spacing:.3px;transition:background .15s,transform .1s}
-.btn-login:active{background:var(--navy2);transform:scale(.99)}
-.lfoot{font-size:12px;color:var(--text3);text-align:center;margin-top:14px}
-.lfoot a{color:var(--teal);text-decoration:none;font-weight:500}
-/* APP */
-.app{display:flex;flex-direction:column;min-height:100vh}
-.topbar{height:58px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-sm)}
-.tb-l{display:flex;align-items:center;gap:10px}
-.tb-mark{width:30px;height:30px;border-radius:8px;background:var(--navy);display:flex;align-items:center;justify-content:center}
-.tb-mark svg{width:16px;height:16px}
-.tb-name{font-size:15px;font-weight:800;color:var(--navy);letter-spacing:-.3px}
-.tb-r{display:flex;align-items:center;gap:8px}
-.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.3px}
-.chip.manager{background:var(--purple-l);color:var(--purple)}
-.chip.doctor{background:var(--teal-l);color:var(--teal)}
-.chip.tech{background:var(--amber-l);color:var(--amber)}
-.chip.patient{background:var(--green-l);color:var(--green)}
-.chip.admin{background:var(--red-l);color:var(--red)}
-.tb-out{background:transparent;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:5px 12px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Sora',sans-serif;transition:all .15s}
-.tb-out:hover{border-color:var(--red);color:var(--red);background:var(--red-l)}
-.content{flex:1;padding:16px;padding-bottom:88px;overflow-y:auto;background:var(--bg)}
-@media(min-width:640px){.content{max-width:720px;margin:0 auto;padding:24px;padding-bottom:100px}}
-.btmnav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom,0);box-shadow:0 -4px 16px rgba(15,45,74,.05);z-index:100}
-@media(min-width:640px){.btmnav{max-width:720px;left:50%;transform:translateX(-50%);border-left:1px solid var(--border);border-right:1px solid var(--border);border-radius:12px 12px 0 0}}
-.bni{flex:1;padding:9px 4px 7px;background:transparent;border:none;cursor:pointer;text-align:center;font-family:'Sora',sans-serif;color:var(--text3);transition:color .15s}
-.bni .ni{font-size:19px;display:block;transition:transform .15s}
-.bni .nl{font-size:9px;display:block;font-weight:600;letter-spacing:.4px;margin-top:2px;text-transform:uppercase}
-.bni.on{color:var(--teal)}
-.bni.on .ni{transform:translateY(-1px)}
-/* CARD */
-.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
-.card-hd{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-.card-hd::before{content:'';display:block;width:3px;height:12px;border-radius:2px;background:var(--teal);flex-shrink:0}
-/* STATS */
-.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-@media(min-width:480px){.sgrid{grid-template-columns:repeat(4,1fr)}}
-.scard{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow-sm)}
-.sn{font-size:30px;font-weight:800;letter-spacing:-1px}
-.sl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
-.st{font-size:11px;margin-top:6px}
-.up{color:var(--green)}.dn{color:var(--red)}
-/* ROWS */
-.lrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.lrow:last-child{border-bottom:none;padding-bottom:0}
-.lrow:first-child{padding-top:0}
-.lic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px}
-.lic.tl{background:var(--teal-l)}.lic.gn{background:var(--green-l)}.lic.am{background:var(--amber-l)}.lic.rd{background:var(--red-l)}.lic.pu{background:var(--purple-l)}.lic.nv{background:#e8edf4}
-.lb{flex:1;min-width:0}
-.lb .lt{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lb .ls{font-size:11px;color:var(--text2);margin-top:2px}
-.le{text-align:right;flex-shrink:0}
-.le .lv{font-size:13px;font-weight:600}
-.le .lx{font-size:11px;color:var(--text3)}
-/* PILLS */
-.pill{display:inline-block;padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase}
-.pill.sub{background:#f1f5f9;color:var(--slate)}
-.pill.rec{background:var(--teal-l);color:var(--teal)}
-.pill.pro{background:var(--amber-l);color:var(--amber)}
-.pill.com{background:var(--green-l);color:var(--green)}
-.pill.ver{background:var(--purple-l);color:var(--purple)}
-.pill.sta{background:var(--red-l);color:var(--red);font-weight:800}
-.pill.rel{background:#e0f2fe;color:#0369a1}
-/* RESULTS */
-.rrow{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.rrow:last-child{border-bottom:none}
-.rrow.abn{background:var(--red-l);border-radius:6px;padding:8px 10px;margin:-2px -10px;border-bottom:none;margin-bottom:2px}
-.rn{font-size:13px;font-weight:500}
-.ru{font-size:11px;color:var(--text3);margin-top:1px}
-.rv{font-size:16px;font-weight:700;text-align:right}
-.rg{font-size:10px;color:var(--text3);margin-top:1px;text-align:right}
-/* ALERTS */
-.alrt{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:var(--r-sm);font-size:12px;margin-bottom:10px;border:1px solid;line-height:1.5}
-.alrt.err{background:var(--red-l);border-color:#fca5a5;color:#991b1b}
-.alrt.inf{background:var(--teal-l);border-color:var(--teal-m);color:#0e7490}
-.alrt.wrn{background:var(--amber-l);border-color:#fcd34d;color:#92400e}
-.alrt.suc{background:var(--green-l);border-color:#6ee7b7;color:#065f46}
-.ai{font-size:15px;flex-shrink:0;margin-top:1px}
-/* BARS */
-.cbar{margin-bottom:14px}
-.cbhd{display:flex;justify-content:space-between;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
-.cbhd span:last-child{font-weight:700;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px}
-.cbtr{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.cbfi{height:100%;border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
-/* TIMELINE */
-.tl-row{display:flex;gap:12px;padding-bottom:16px}
-.tl-row:last-child{padding-bottom:0}
-.tl-l{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
-.tl-d{width:12px;height:12px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:3px}
-.tl-d.done{background:var(--green);box-shadow:0 0 0 3px var(--green-l)}
-.tl-d.now{background:var(--teal);box-shadow:0 0 0 3px var(--teal-l)}
-.tl-ln{flex:1;width:2px;background:var(--border);margin-top:4px}
-.tl-row:last-child .tl-ln{display:none}
-.tl-b .tbl{font-size:12px;font-weight:600;color:var(--text)}
-.tl-b .tbs{font-size:11px;color:var(--text3);margin-top:1px;font-family:'JetBrains Mono',monospace}
-/* FORM */
-.frow{margin-bottom:14px}
-.frow label{display:block;font-size:10px;font-weight:700;color:var(--slate);letter-spacing:.8px;text-transform:uppercase;margin-bottom:5px}
-.frow input,.frow select,.frow textarea{width:100%;border:1.5px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;font-family:'Sora',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s}
-.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(8,145,178,.1)}
-.frow select option{background:var(--white)}
-.frow textarea{resize:none;min-height:72px}
-.chk{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:var(--r-sm);border:1.5px solid var(--border);margin-bottom:6px;cursor:pointer;transition:border-color .15s,background .15s}
-.chk.on{background:var(--teal-l);border-color:var(--teal)}
-.chkb{width:18px;height:18px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;background:white;transition:all .15s}
-.chk.on .chkb{background:var(--teal);border-color:var(--teal);color:white}
-/* BTNS */
-.btn{border:none;border-radius:var(--r-sm);cursor:pointer;font-family:'Sora',sans-serif;font-weight:600;transition:all .15s}
-.bp{background:var(--navy);color:white;padding:12px 20px;font-size:13px}
-.bp:active{background:var(--navy2);transform:scale(.98)}
-.bt{background:var(--teal);color:white;padding:10px 16px;font-size:12px}
-.bt:active{opacity:.85}
-.bg{background:transparent;border:1.5px solid var(--border);color:var(--text2);padding:9px 14px;font-size:12px}
-.bg:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-l)}
-.bdr{background:var(--red-l);border:1.5px solid #fca5a5;color:var(--red);padding:9px 14px;font-size:12px}
-.bfull{width:100%}
-/* SEARCH */
-.srch{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:9px 13px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
-.srch input{flex:1;background:transparent;border:none;outline:none;font-size:13px;font-family:'Sora',sans-serif;color:var(--text)}
-.srch input::placeholder{color:var(--text3)}
-/* TABS */
-.tabs{display:flex;gap:4px;background:var(--white);padding:4px;border-radius:var(--r-sm);margin-bottom:14px;border:1px solid var(--border)}
-.tab{flex:1;padding:8px;border:none;border-radius:5px;background:transparent;font-size:11px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;color:var(--text3);transition:all .15s}
-.tab.on{background:var(--navy);color:white}
-/* HEADINGS */
-.shd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.shd h2{font-size:18px;font-weight:800;letter-spacing:-.4px}
-.shd .ss{font-size:12px;color:var(--text2);margin-top:1px}
-/* BANNER */
-.wbn{background:linear-gradient(120deg,var(--navy) 0%,var(--navy2) 100%);border-radius:var(--r-lg);padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
-.wbn::after{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;border:30px solid rgba(255,255,255,.05)}
-.wbn h3{font-size:17px;font-weight:700;color:white}
-.wbn p{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
-/* GRAPH */
-.gsvg{width:100%;height:90px}
-/* RING */
-.pring{display:flex;align-items:center;gap:14px}
-.pring svg{transform:rotate(-90deg)}
-.ptr{fill:none;stroke:var(--bg);stroke-width:7}
-.pfi{fill:none;stroke:var(--teal);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .8s}
-.prn{font-size:22px;font-weight:800;letter-spacing:-1px}
-.prl{font-size:11px;color:var(--text2);margin-top:2px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+/* ---- SCROLLBAR ---- */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
+
+/* ======= LOGIN SCREEN ======= */
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;transition:opacity .5s}
+#loginScreen.hidden{opacity:0;pointer-events:none}
+.login-bg{position:absolute;inset:0;overflow:hidden}
+.login-bg::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(79,142,247,0.12),transparent 70%);top:-100px;right:-100px;animation:pulse 6s ease-in-out infinite}
+.login-bg::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(159,122,234,0.08),transparent 70%);bottom:-50px;left:-50px;animation:pulse 8s ease-in-out infinite reverse}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.1);opacity:0.7}}
+.login-card{position:relative;z-index:1;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:48px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.login-logo{text-align:center;margin-bottom:32px}
+.login-logo h1{font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:-0.5px}
+.login-logo span{color:var(--accent)}
+.login-logo p{font-size:12px;color:var(--text3);margin-top:4px;font-family:'DM Mono',monospace;letter-spacing:1px;text-transform:uppercase}
+.login-tabs{display:flex;gap:6px;background:var(--bg3);border-radius:var(--radius-sm);padding:4px;margin-bottom:28px}
+.login-tab{flex:1;padding:8px;border:none;background:none;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px;border-radius:6px;cursor:pointer;transition:all .2s;font-weight:500}
+.login-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:0.3px}
+.form-group input,.form-group select{width:100%;padding:11px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group select option{background:var(--bg2)}
+.btn-primary{width:100%;padding:13px;background:var(--accent);border:none;border-radius:var(--radius-sm);color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.2px}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(79,142,247,0.35)}
+.demo-hint{margin-top:20px;padding:14px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border)}
+.demo-hint p{font-size:11px;color:var(--text3);line-height:1.7;font-family:'DM Mono',monospace}
+.demo-hint strong{color:var(--accent2)}
+
+/* ======= MAIN APP ======= */
+#app{display:none;height:100vh;overflow:hidden}
+#app.visible{display:flex}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:20px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-header h2{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--text)}
+.sidebar-header h2 span{color:var(--accent)}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--bg3)}
+.user-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;flex-shrink:0}
+.user-info p{font-size:13px;font-weight:500;color:var(--text)}
+.user-info span{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px}
+.nav-section{margin-bottom:8px}
+.nav-section-label{font-size:10px;color:var(--text3);font-weight:600;letter-spacing:1.2px;text-transform:uppercase;padding:6px 10px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;color:var(--text2);font-size:13px;font-weight:500;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--accent-glow);color:var(--accent2);border:1px solid rgba(79,142,247,0.2)}
+.nav-item .icon{font-size:15px;width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600}
+.nav-badge.green{background:var(--green)}
+.nav-badge.amber{background:var(--amber);color:#1a1a1a}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border)}
+.btn-logout{width:100%;padding:9px;background:transparent;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-logout:hover{background:rgba(245,101,101,0.1);border-color:var(--red);color:var(--red)}
+
+/* MAIN CONTENT */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.topbar{padding:16px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar h3{font-size:18px;font-weight:600;color:var(--text)}
+.topbar-actions{display:flex;gap:10px;align-items:center}
+.content{flex:1;overflow-y:auto;padding:28px}
+
+/* PANELS */
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS & STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.stat-card::after{content:'';position:absolute;top:0;right:0;width:80px;height:80px;border-radius:50%;opacity:0.06;background:var(--accent);transform:translate(20px,-20px)}
+.stat-card.red::after{background:var(--red)}
+.stat-card.green::after{background:var(--green)}
+.stat-card.amber::after{background:var(--amber)}
+.stat-card.purple::after{background:var(--purple)}
+.stat-card .icon{font-size:22px;margin-bottom:10px}
+.stat-card .value{font-size:28px;font-weight:600;color:var(--text);font-family:'Fraunces',serif}
+.stat-card .label{font-size:12px;color:var(--text2);margin-top:4px}
+.stat-card .trend{font-size:11px;color:var(--green);margin-top:6px}
+.stat-card.red .trend{color:var(--red)}
+
+/* TABLES */
+.table-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+.table-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.table-header h4{font-size:14px;font-weight:600}
+.table-search{padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:200px}
+.table-search:focus{border-color:var(--accent)}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 20px;text-align:left;font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;background:var(--bg3);border-bottom:1px solid var(--border)}
+td{padding:13px 20px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3);color:var(--text)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.badge.submitted{background:rgba(79,142,247,0.15);color:var(--accent2)}
+.badge.progress{background:rgba(246,173,85,0.15);color:var(--amber)}
+.badge.completed{background:rgba(72,187,120,0.15);color:var(--green)}
+.badge.verified{background:rgba(159,122,234,0.15);color:var(--purple)}
+.badge.urgent{background:rgba(245,101,101,0.2);color:var(--red)}
+.badge.routine{background:rgba(56,178,172,0.15);color:var(--teal)}
+.badge.released{background:rgba(72,187,120,0.2);color:var(--green)}
+.badge.cancelled{background:rgba(245,101,101,0.1);color:var(--red)}
+.badge.low{background:rgba(245,101,101,0.2);color:var(--red)}
+.badge.normal{background:rgba(72,187,120,0.15);color:var(--green)}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent2);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text2)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent2)}
+.btn-danger{background:rgba(245,101,101,0.15);color:var(--red);border:1px solid rgba(245,101,101,0.3)}
+.btn-danger:hover{background:rgba(245,101,101,0.25)}
+.btn-success{background:rgba(72,187,120,0.15);color:var(--green);border:1px solid rgba(72,187,120,0.3)}
+.btn-success:hover{background:rgba(72,187,120,0.25)}
+.btn-sm{padding:5px 11px;font-size:12px}
+
+/* FORM LAYOUTS */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr}
+.form-full{grid-column:1/-1}
+.form-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:20px}
+.form-card h4{font-size:14px;font-weight:600;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);color:var(--text)}
+.form-row{display:flex;gap:12px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:6px;flex:1}
+.fg label{font-size:12px;color:var(--text2);font-weight:500}
+.fg input,.fg select,.fg textarea{padding:10px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+.fg select option{background:var(--bg2)}
+.fg textarea{resize:vertical;min-height:80px}
+
 /* MODAL */
-.ov{display:none;position:fixed;inset:0;background:rgba(15,45,74,.45);backdrop-filter:blur(3px);z-index:200;align-items:flex-end;justify-content:center}
-.ov.open{display:flex;animation:fIn .2s}
-@keyframes fIn{from{opacity:0}to{opacity:1}}
-.sh{background:var(--white);border-radius:20px 20px 0 0;border-top:1px solid var(--border);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:24px;animation:shU .28s cubic-bezier(.4,0,.2,1);box-shadow:0 -8px 40px rgba(15,45,74,.12)}
-@keyframes shU{from{transform:translateY(50px);opacity:0}to{transform:none;opacity:1}}
-.sh-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
-.sh-title{font-size:17px;font-weight:800;margin-bottom:16px;letter-spacing:-.3px}
-.divider{height:1px;background:var(--border);margin:14px 0}
-/* TOAST */
-#toast{display:none;position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--navy);color:white;border-radius:10px;padding:11px 20px;font-size:13px;font-weight:600;z-index:300;white-space:nowrap;box-shadow:var(--shadow-lg);animation:fIn .25s}
-/* OVERDUE */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
-.ov-text{animation:pulse 1.4s infinite;color:var(--red)!important;font-weight:700!important}
-/* MISC */
-.sec-l{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:16px 0 8px}
-@media(max-width:599px){.lsidebar{display:none}.lwrap{border-radius:16px}.lfpanel{padding:32px 24px}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:32px;width:90%;max-width:560px;max-height:85vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal h3{font-size:17px;font-weight:600;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* ALERT BANNER */
+.alert{padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:16px;font-size:13px;display:flex;align-items:center;gap:10px}
+.alert.info{background:rgba(79,142,247,0.1);border:1px solid rgba(79,142,247,0.2);color:var(--accent2)}
+.alert.warning{background:rgba(246,173,85,0.1);border:1px solid rgba(246,173,85,0.2);color:var(--amber)}
+.alert.success{background:rgba(72,187,120,0.1);border:1px solid rgba(72,187,120,0.2);color:var(--green)}
+.alert.danger{background:rgba(245,101,101,0.1);border:1px solid rgba(245,101,101,0.2);color:var(--red)}
+
+/* DASHBOARD CHART PLACEHOLDER */
+.chart-placeholder{background:var(--bg3);border-radius:var(--radius-sm);height:180px;display:flex;align-items:flex-end;justify-content:space-around;padding:20px 20px 0;gap:8px;overflow:hidden}
+.bar{border-radius:4px 4px 0 0;min-width:28px;position:relative;transition:height .8s cubic-bezier(.34,1.56,.64,1)}
+.bar-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--text3);white-space:nowrap}
+
+/* PROGRESS TIMELINE */
+.timeline{display:flex;flex-direction:column;gap:0}
+.timeline-step{display:flex;gap:16px;position:relative}
+.timeline-step:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;bottom:0;width:2px;background:var(--border)}
+.tl-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1}
+.tl-dot.done{background:rgba(72,187,120,0.2);border:2px solid var(--green)}
+.tl-dot.active{background:rgba(79,142,247,0.2);border:2px solid var(--accent);animation:ringPulse 2s infinite}
+.tl-dot.pending{background:var(--bg3);border:2px solid var(--border)}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(79,142,247,0.3)}50%{box-shadow:0 0 0 6px rgba(79,142,247,0)}}
+.tl-content{flex:1;padding-bottom:20px}
+.tl-content p{font-size:13px;font-weight:500;color:var(--text)}
+.tl-content span{font-size:11px;color:var(--text3)}
+
+/* RESULT CARD */
+.result-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px}
+.result-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.result-row:last-child{border-bottom:none}
+.result-name{font-size:13px;color:var(--text);font-weight:500}
+.result-value{font-size:14px;font-weight:600;font-family:'DM Mono',monospace}
+.result-range{font-size:11px;color:var(--text3)}
+.abnormal{color:var(--red)}
+.normal-val{color:var(--green)}
+
+/* DASHBOARD WORKLOAD */
+.workload-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.workload-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;display:flex;align-items:center;gap:14px}
+.workload-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.wc-blue{background:rgba(79,142,247,0.15)}
+.wc-amber{background:rgba(246,173,85,0.15)}
+.wc-red{background:rgba(245,101,101,0.15)}
+.wc-green{background:rgba(72,187,120,0.15)}
+.wc-purple{background:rgba(159,122,234,0.15)}
+.workload-card .num{font-size:24px;font-weight:600;font-family:'Fraunces',serif}
+.workload-card .lbl{font-size:12px;color:var(--text2)}
+
+/* GRAPH PLACEHOLDER */
+.graph-area{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin-bottom:16px}
+.graph-area h5{font-size:13px;font-weight:600;margin-bottom:14px}
+.sparkline{display:flex;align-items:flex-end;gap:4px;height:80px}
+.spark-bar{flex:1;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--accent),var(--purple));opacity:0.7;min-width:12px;transition:height 1s}
+
+/* CONSENT TABLE */
+.consent-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.consent-row:last-child{border-bottom:none}
+.toggle-switch{position:relative;width:36px;height:20px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.slider-toggle{position:absolute;inset:0;background:var(--surface2);border-radius:10px;cursor:pointer;transition:.3s}
+.slider-toggle::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:var(--text2);border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.slider-toggle{background:var(--accent)}
+.toggle-switch input:checked+.slider-toggle::before{transform:translateX(16px);background:#fff}
+
+/* STOCK LEVEL BAR */
+.stock-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-top:4px}
+.stock-fill{height:100%;border-radius:3px;transition:width .8s}
+.stock-fill.high{background:var(--green)}
+.stock-fill.med{background:var(--amber)}
+.stock-fill.low{background:var(--red)}
+
+/* NOTIFICATION DOT */
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;display:inline-block;margin-left:4px;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+
+/* SECTION TITLE */
+.section-title{font-size:22px;font-weight:600;font-family:'Fraunces',serif;margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty .emoji{font-size:36px;margin-bottom:12px}
+.empty p{font-size:14px}
+
+/* ROLE SWITCHER in topbar */
+.role-pill{padding:5px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;font-size:12px;color:var(--accent2);font-weight:600;font-family:'DM Mono',monospace}
+
+/* PASSWORD MASK BUTTON */
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:40px}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px}
+
+/* TABS inside panel */
+.panel-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:var(--radius-sm);padding:4px;margin-bottom:20px;width:fit-content}
+.panel-tab{padding:7px 16px;border:none;background:none;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;border-radius:6px;cursor:pointer;font-weight:500;transition:all .2s}
+.panel-tab.active{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+
+/* Overdue flag */
+.overdue{color:var(--red);font-weight:600;font-size:11px}
+
+/* REPORT PREVIEW */
+.report-preview{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:20px;margin-top:16px}
+.report-preview h5{font-size:13px;color:var(--text3);margin-bottom:10px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.8px}
+
+/* CONSENT PATIENT CARD */
+.patient-consent-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div class="screen active" id="screen-login">
-  <div class="blob1"></div><div class="blob2"></div>
-  <div class="lwrap">
-    <div class="lsidebar">
-      <div>
-        <div class="ls-logo">
-          <div class="ls-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
-          <div class="ls-brand"><div class="ls-name">NMB-HLabSys</div><div class="ls-sub">Lab System</div></div>
-        </div>
-        <div class="ls-tag"><h2>Haematology at the speed of care.</h2><p>Nelson Mandela Bay Haematology Diagnostic Laboratories — digital test request and results management.</p></div>
-      </div>
-      <div class="ls-sdg"><div class="sdg-ico">🏥</div><div class="sdg-txt"><strong>UN SDG 3</strong>Good Health &amp; Well-Being</div></div>
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen">
+  <div class="login-bg"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <h1>NMB-<span>HLab</span>Sys</h1>
+      <p>Nelson Mandela Bay · Haematology Laboratory</p>
     </div>
-    <div class="lfpanel">
-      <div class="lf-title">Welcome back</div>
-      <div class="lf-sub">Select your role and sign in to continue</div>
-      <div class="rgrid">
-        <button class="rpill on" onclick="selRole('manager',this)"><span class="ri">🧪</span><span class="rl">Manager</span></button>
-        <button class="rpill" onclick="selRole('doctor',this)"><span class="ri">👨‍⚕️</span><span class="rl">Doctor</span></button>
-        <button class="rpill" onclick="selRole('tech',this)"><span class="ri">🔬</span><span class="rl">Tech</span></button>
-        <button class="rpill" onclick="selRole('patient',this)"><span class="ri">🏥</span><span class="rl">Patient</span></button>
-        <button class="rpill" onclick="selRole('admin',this)"><span class="ri">⚙️</span><span class="rl">Admin</span></button>
-      </div>
-      <div class="fld"><label>Email Address</label><input id="l-email" type="email" value="manager@nmbhdl.co.za" placeholder="you@nmbhdl.co.za"></div>
-      <div class="fld"><label>Password</label><input id="l-pw" type="password" value="Test@1234" placeholder="••••••••"></div>
-      <button class="btn-login" onclick="doLogin()">Sign In →</button>
-      <div class="lfoot">Forgot password? <a href="#">Reset via email</a></div>
+    <div class="login-tabs" id="loginTabs">
+      <button class="login-tab active" onclick="setRole('manager',this)">Manager</button>
+      <button class="login-tab" onclick="setRole('doctor',this)">Doctor</button>
+      <button class="login-tab" onclick="setRole('technician',this)">Tech</button>
+      <button class="login-tab" onclick="setRole('patient',this)">Patient</button>
+      <button class="login-tab" onclick="setRole('admin',this)">Admin</button>
     </div>
-  </div>
-</div>
-
-<!-- MANAGER -->
-<div class="screen" id="screen-manager">
-<div class="app">
-  <div class="topbar">
-    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
-    <div class="tb-r"><span class="chip manager">🧪 Manager</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
-  </div>
-  <div class="content">
-    <div id="mgr-dash">
-      <div class="wbn"><h3>Good morning, Prof. Mostert 👋</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
-      <div class="sgrid">
-        <div class="scard"><div class="sn" style="color:var(--teal)">247</div><div class="sl">Tests Today</div><div class="st up">↑ 12% vs yesterday</div></div>
-        <div class="scard"><div class="sn" style="color:var(--green)">18</div><div class="sl">Technicians</div><div class="st" style="color:var(--text3)">3 on leave</div></div>
-        <div class="scard"><div class="sn" style="color:var(--red)">5</div><div class="sl">Low Stock</div><div class="st dn">↓ Reorder needed</div></div>
-        <div class="scard"><div class="sn" style="color:var(--purple)">34</div><div class="sl">Doctors</div><div class="st up">↑ 2 this month</div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Tests by Category — This Week</div>
-        <div class="cbar"><div class="cbhd"><span>Full Blood Count</span><span>112</span></div><div class="cbtr"><div class="cbfi" style="width:85%;background:var(--teal)"></div></div></div>
-        <div class="cbar"><div class="cbhd"><span>Coagulation Studies</span><span>67</span></div><div class="cbtr"><div class="cbfi" style="width:51%;background:var(--green)"></div></div></div>
-        <div class="cbar"><div class="cbhd"><span>Differential Count</span><span>54</span></div><div class="cbtr"><div class="cbfi" style="width:41%;background:var(--purple)"></div></div></div>
-        <div class="cbar"><div class="cbhd"><span>Peripheral Blood Film</span><span>38</span></div><div class="cbtr"><div class="cbfi" style="width:29%;background:var(--amber)"></div></div></div>
-        <div class="cbar"><div class="cbhd"><span>Bone Marrow Biopsy</span><span>14</span></div><div class="cbtr"><div class="cbfi" style="width:11%;background:var(--red)"></div></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">⚠️ Low Stock Alerts</div>
-        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">EDTA Tubes (3ml)</div><div class="ls">Reorder: 500 · BioTech Supplies</div></div><div class="le"><div class="lv dn">42 left</div><div class="lx">Critical</div></div></div>
-        <div class="lrow"><div class="lic am">📦</div><div class="lb"><div class="lt">Reagent Mix B-7</div><div class="ls">Reorder: 200 · MedLab SA</div></div><div class="le"><div class="lv" style="color:var(--amber)">198 left</div><div class="lx">Near limit</div></div></div>
-        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">Citrate Tubes (5ml)</div><div class="ls">Reorder: 300 · BioTech Supplies</div></div><div class="le"><div class="lv dn">11 left</div><div class="lx">Critical</div></div></div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" value="manager@nmbhlab.co.za" placeholder="your@email.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginPw" value="Lab@2025!" placeholder="••••••••"/>
+        <button class="pw-toggle" onclick="togglePw()">👁</button>
       </div>
     </div>
-    <div id="mgr-tests" style="display:none">
-      <div class="shd"><div><h2>Test Catalogue</h2><div class="ss">16 types · 5 categories</div></div><button class="btn bt" onclick="openM('m-addtest')">+ Add Test</button></div>
-      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search tests..."></div>
-      <div class="card">
-        <div class="card-hd" style="color:var(--teal)">Full Blood Count — 5 tests</div>
-        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">Haemoglobin (Hb)</div><div class="ls">Whole blood · g/dL · Range: 12–17 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">White Cell Count</div><div class="ls">Whole blood · x10³/µL · Range: 4–11 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic tl">🧬</div><div class="lb"><div class="lt">Platelet Count</div><div class="ls">Whole blood · x10³/µL · Range: 150–400 · TAT 30min</div></div><div class="le"><span class="pill com">Active</span></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd" style="color:var(--amber)">Coagulation Studies — 3 tests</div>
-        <div class="lrow"><div class="lic am">🧬</div><div class="lb"><div class="lt">Prothrombin Time (PT)</div><div class="ls">Plasma · seconds · Range: 11–13.5 · TAT 45min</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic am">🧬</div><div class="lb"><div class="lt">APTT</div><div class="ls">Plasma · seconds · Range: 25–35 · TAT 45min</div></div><div class="le"><span class="pill com">Active</span></div></div>
-      </div>
-    </div>
-    <div id="mgr-stock" style="display:none">
-      <div class="shd"><div><h2>Stock Management</h2><div class="ss">24 consumable items</div></div><button class="btn bt" onclick="openM('m-order')">+ Order</button></div>
-      <div class="card">
-        <div class="card-hd">Consumable Inventory</div>
-        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">EDTA Tubes (3ml)</div><div class="ls">BioTech Supplies · Min: 500</div></div><div class="le"><div class="lv dn">42</div></div></div>
-        <div class="lrow"><div class="lic gn">📦</div><div class="lb"><div class="lt">Heparin Tubes</div><div class="ls">MedLab SA · Min: 200</div></div><div class="le"><div class="lv up">830</div></div></div>
-        <div class="lrow"><div class="lic am">📦</div><div class="lb"><div class="lt">Reagent Mix B-7</div><div class="ls">MedLab SA · Min: 200</div></div><div class="le"><div class="lv" style="color:var(--amber)">198</div></div></div>
-        <div class="lrow"><div class="lic rd">📦</div><div class="lb"><div class="lt">Citrate Tubes (5ml)</div><div class="ls">BioTech Supplies · Min: 300</div></div><div class="le"><div class="lv dn">11</div></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Recent Orders</div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">ORD-2026-042</div><div class="ls">BioTech Supplies · 3 items · 3 Mar 2026</div></div><div class="le"><span class="pill pro">Ordered</span></div></div>
-        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">ORD-2026-041</div><div class="ls">MedLab SA · 2 items · 28 Feb 2026</div></div><div class="le"><span class="pill com">Complete</span></div></div>
-      </div>
-    </div>
-    <div id="mgr-staff" style="display:none">
-      <div class="shd"><div><h2>Staff</h2></div><button class="btn bt" onclick="openM('m-addstaff')">+ Add</button></div>
-      <div class="tabs"><button class="tab on" onclick="subT(this,'st-docs')">Doctors</button><button class="tab" onclick="subT(this,'st-techs')">Technicians</button></div>
-      <div id="st-docs" class="card">
-        <div class="lrow"><div class="lic pu">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Amahle Dlamini</div><div class="ls">MP0123456 · dlamini@clinic.co.za</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic pu">👩‍⚕️</div><div class="lb"><div class="lt">Dr. Johan Pretorius</div><div class="ls">MP0234567 · pretorius@nhospital.co.za</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic pu">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Priya Naidoo</div><div class="ls">MP0345678 · naidoo@medplex.co.za</div></div><div class="le"><span class="pill sub">Pending PW</span></div></div>
-      </div>
-      <div id="st-techs" style="display:none" class="card">
-        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Zanele Mokoena</div><div class="ls">EMP-0041 · FBC, Diff Count, Coagulation</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Sipho Khumalo</div><div class="ls">EMP-0042 · FBC, Peripheral Film</div></div><div class="le"><span class="pill com">Active</span></div></div>
-        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">Annika van Wyk</div><div class="ls">EMP-0043 · Coagulation, Bone Marrow</div></div><div class="le"><span class="pill pro">On Leave</span></div></div>
-      </div>
-    </div>
-  </div>
-  <nav class="btmnav">
-    <button class="bni on" onclick="mT('dash',this)"><span class="ni">📊</span><span class="nl">Dashboard</span></button>
-    <button class="bni" onclick="mT('tests',this)"><span class="ni">🧬</span><span class="nl">Tests</span></button>
-    <button class="bni" onclick="mT('stock',this)"><span class="ni">📦</span><span class="nl">Stock</span></button>
-    <button class="bni" onclick="mT('staff',this)"><span class="ni">👥</span><span class="nl">Staff</span></button>
-  </nav>
-</div>
-</div>
-
-<!-- DOCTOR -->
-<div class="screen" id="screen-doctor">
-<div class="app">
-  <div class="topbar">
-    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
-    <div class="tb-r"><span class="chip doctor">👨‍⚕️ Doctor</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
-  </div>
-  <div class="content">
-    <div id="doc-dash">
-      <div class="wbn"><h3>Dr. Amahle Dlamini 👋</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
-      <div class="alrt err"><span class="ai">⚠️</span><div><strong>3 abnormal results</strong> require your review today.</div></div>
-      <div class="sgrid">
-        <div class="scard"><div class="sn" style="color:var(--teal)">12</div><div class="sl">Active Requests</div></div>
-        <div class="scard"><div class="sn" style="color:var(--green)">8</div><div class="sl">Results Ready</div></div>
-        <div class="scard"><div class="sn" style="color:var(--red)">3</div><div class="sl">Abnormal</div></div>
-        <div class="scard"><div class="sn" style="color:var(--amber)">4</div><div class="sl">Unreleased</div></div>
-      </div>
-      <div class="shd"><div><h2>Recent Requests</h2></div><button class="btn bt" onclick="openM('m-newreq')">+ New Request</button></div>
-      <div class="card">
-        <div class="lrow" onclick="openM('m-results')" style="cursor:pointer"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC, Coagulation · 5 Mar</div></div><div class="le"><span class="pill com">Completed</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC · 5 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
-        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849 🚨</div><div class="ls">Pieter de Wet · STAT · Diff Count · 6 Mar</div></div><div class="le"><span class="pill sta">STAT</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation · 6 Mar</div></div><div class="le"><span class="pill sub">Submitted</span></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Abnormal Alerts — Last 5 Days</div>
-        <div class="alrt err" style="margin-bottom:8px"><span class="ai">⬆</span><div>Haemoglobin 19.2 g/dL · <strong>Thabo Sithole</strong> · REQ-0847</div></div>
-        <div class="alrt err" style="margin-bottom:8px"><span class="ai">⬇</span><div>Platelet Count 42 x10³/µL · <strong>Nomsa Dube</strong> · REQ-0848</div></div>
-        <div class="alrt err"><span class="ai">⬆</span><div>WCC 18.5 x10³/µL · <strong>Pieter de Wet</strong> · REQ-0849</div></div>
-      </div>
-    </div>
-    <div id="doc-patients" style="display:none">
-      <div class="shd"><div><h2>Patients</h2></div><button class="btn bt">+ Add Patient</button></div>
-      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search by name or SA ID..."></div>
-      <div class="card">
-        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Thabo Sithole</div><div class="ls">DOB: 12 Apr 1985 · ID: 9504125067082</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">4 requests</div></div></div>
-        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Nomsa Dube</div><div class="ls">DOB: 3 Jul 1992 · ID: 9207030486089</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">2 requests</div></div></div>
-        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Pieter de Wet</div><div class="ls">DOB: 29 Nov 1970 · ID: 7011295018083</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">6 requests</div></div></div>
-        <div class="lrow"><div class="lic tl">👤</div><div class="lb"><div class="lt">Aisha Khan</div><div class="ls">DOB: 15 Feb 1998 · ID: 9802150123086</div></div><div class="le"><div class="lv" style="font-size:11px;color:var(--text3)">1 request</div></div></div>
-      </div>
-    </div>
-    <div id="doc-results" style="display:none">
-      <div class="shd"><div><h2>Results</h2><div class="ss">Awaiting your review</div></div></div>
-      <div class="card">
-        <div class="card-hd">REQ-2026-0847 · Thabo Sithole</div>
-        <div class="alrt err" style="margin-bottom:14px"><span class="ai">⚠️</span><div><strong>2 abnormal values</strong> detected.</div></div>
-        <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-        <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
-        <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-        <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">Normal</div></div></div>
-        <div style="display:flex;gap:8px;margin-top:14px"><button class="btn bt" style="flex:1" onclick="openM('m-release')">Release to Patient</button><button class="btn bg">📄 PDF</button></div>
-      </div>
-    </div>
-    <div id="doc-requests" style="display:none">
-      <div class="shd"><div><h2>All Requests</h2></div><button class="btn bt" onclick="openM('m-newreq')">+ New</button></div>
-      <div class="tabs"><button class="tab on">All</button><button class="tab">Pending</button><button class="tab">Completed</button></div>
-      <div class="card">
-        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC, Coagulation</div></div><div class="le"><span class="pill com">Completed</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
-        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849</div><div class="ls">Pieter de Wet · STAT · Diff Count</div></div><div class="le"><span class="pill sta">STAT</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation</div></div><div class="le"><span class="pill sub">Submitted</span></div></div>
-      </div>
-    </div>
-  </div>
-  <nav class="btmnav">
-    <button class="bni on" onclick="dT('dash',this)"><span class="ni">🏠</span><span class="nl">Home</span></button>
-    <button class="bni" onclick="dT('patients',this)"><span class="ni">👥</span><span class="nl">Patients</span></button>
-    <button class="bni" onclick="dT('results',this)"><span class="ni">📊</span><span class="nl">Results</span></button>
-    <button class="bni" onclick="dT('requests',this)"><span class="ni">📋</span><span class="nl">Requests</span></button>
-  </nav>
-</div>
-</div>
-
-<!-- TECHNICIAN -->
-<div class="screen" id="screen-tech">
-<div class="app">
-  <div class="topbar">
-    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
-    <div class="tb-r"><span class="chip tech">🔬 Technician</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
-  </div>
-  <div class="content">
-    <div id="tech-work">
-      <div class="wbn"><h3>Zanele Mokoena 🔬</h3><p>Friday, 6 March 2026 · 07:42 AM</p></div>
-      <div class="alrt err"><span class="ai">🚨</span><div><strong>STAT:</strong> REQ-0849 · Pieter de Wet · Diff Count — overdue</div></div>
-      <div class="sgrid">
-        <div class="scard"><div class="sn" style="color:var(--teal)">7</div><div class="sl">Assigned</div></div>
-        <div class="scard"><div class="sn ov-text">2</div><div class="sl">Overdue</div></div>
-        <div class="scard"><div class="sn" style="color:var(--purple)">4</div><div class="sl">To Verify</div></div>
-        <div class="scard"><div class="sn" style="color:var(--red)">1</div><div class="sl">STAT</div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Workload</div>
-        <div class="pring">
-          <svg width="60" height="60" viewBox="0 0 60 60"><circle class="ptr" cx="30" cy="30" r="24"/><circle class="pfi" cx="30" cy="30" r="24" stroke-dasharray="150.8" stroke-dashoffset="43"/></svg>
-          <div><div class="prn">5/7</div><div class="prl">Tests in progress today</div></div>
-        </div>
-      </div>
-      <div class="sec-l">My Assigned Tests</div>
-      <div class="card">
-        <div class="lrow" onclick="openM('m-capture')" style="cursor:pointer"><div class="lic rd">🔬</div><div class="lb"><div class="lt">Diff Count · Pieter de Wet</div><div class="ls"><span class="ov-text">REQ-0849 · OVERDUE · Due 07:45</span></div></div><div class="le"><span class="pill sta">STAT</span></div></div>
-        <div class="lrow"><div class="lic am">🔬</div><div class="lb"><div class="lt">FBC · Nomsa Dube</div><div class="ls">REQ-0848 · Due 09:15</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
-        <div class="lrow"><div class="lic gn">🔬</div><div class="lb"><div class="lt">Coagulation · Thabo Sithole</div><div class="ls">REQ-0847 · Completed 11:45</div></div><div class="le"><span class="pill com">Done</span></div></div>
-      </div>
-      <div class="sec-l">Awaiting Sample Receipt</div>
-      <div class="card">
-        <div class="lrow"><div class="lic tl">📥</div><div class="lb"><div class="lt">REQ-2026-0850</div><div class="ls">Aisha Khan · Coagulation · Routine</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px" onclick="openM('m-receive')">Receive</button></div></div>
-      </div>
-    </div>
-    <div id="tech-verify" style="display:none">
-      <div class="shd"><div><h2>Verification Queue</h2><div class="ss">Results awaiting sign-off</div></div></div>
-      <div class="card">
-        <div class="lrow"><div class="lic pu">✅</div><div class="lb"><div class="lt">FBC · Thabo Sithole</div><div class="ls">Captured by: Sipho Khumalo · REQ-0847</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px" onclick="openM('m-verify')">Verify</button></div></div>
-        <div class="lrow"><div class="lic pu">✅</div><div class="lb"><div class="lt">PT · Aisha Khan</div><div class="ls">Captured by: Annika van Wyk · REQ-0850</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Verify</button></div></div>
-      </div>
-      <div class="sec-l">Returned to Me</div>
-      <div class="card">
-        <div class="alrt wrn"><span class="ai">↩</span><div><strong>APTT · Nomsa Dube (REQ-0848)</strong><br>"Check reagent calibration — value seems low"</div></div>
-        <div style="margin-top:8px"><button class="btn bg bfull">Review &amp; Resubmit</button></div>
-      </div>
-    </div>
-    <div id="tech-all" style="display:none">
-      <div class="shd"><div><h2>All Requests</h2></div></div>
-      <div class="srch"><span style="color:var(--text3)">🔍</span><input placeholder="Search request or patient..."></div>
-      <div class="card">
-        <div class="lrow"><div class="lic rd">📋</div><div class="lb"><div class="lt">REQ-2026-0849 🚨 STAT</div><div class="ls">Pieter de Wet · Diff Count · 6 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
-        <div class="lrow"><div class="lic am">📋</div><div class="lb"><div class="lt">REQ-2026-0848</div><div class="ls">Nomsa Dube · FBC · 5 Mar</div></div><div class="le"><span class="pill pro">In Progress</span></div></div>
-        <div class="lrow"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Thabo Sithole · FBC + Coag · 5 Mar</div></div><div class="le"><span class="pill com">Completed</span></div></div>
-      </div>
-    </div>
-    <div id="tech-profile" style="display:none">
-      <div class="shd"><div><h2>My Profile</h2></div></div>
-      <div class="card">
-        <div class="lrow"><div class="lb"><div class="lt">Zanele Mokoena</div><div class="ls">zanele.mokoena@nmbhdl.co.za</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">Employee Number</div><div class="ls">EMP-0041</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">SA ID Number</div><div class="ls" style="font-family:'JetBrains Mono',monospace">9205150342084</div></div></div>
-      </div>
-      <div class="card">
-        <div class="card-hd">Assigned Test Types</div>
-        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Full Blood Count (FBC)</span></div>
-        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Differential Count</span></div>
-        <div class="chk on"><div class="chkb">✓</div><span style="font-size:13px">Coagulation Studies</span></div>
-        <div class="chk"><div class="chkb"></div><span style="font-size:13px;color:var(--text3)">Bone Marrow Biopsy</span></div>
-      </div>
-    </div>
-  </div>
-  <nav class="btmnav">
-    <button class="bni on" onclick="tT('work',this)"><span class="ni">🔬</span><span class="nl">My Work</span></button>
-    <button class="bni" onclick="tT('verify',this)"><span class="ni">✅</span><span class="nl">Verify</span></button>
-    <button class="bni" onclick="tT('all',this)"><span class="ni">📋</span><span class="nl">All Reqs</span></button>
-    <button class="bni" onclick="tT('profile',this)"><span class="ni">👤</span><span class="nl">Profile</span></button>
-  </nav>
-</div>
-</div>
-
-<!-- PATIENT -->
-<div class="screen" id="screen-patient">
-<div class="app">
-  <div class="topbar">
-    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
-    <div class="tb-r"><span class="chip patient">🏥 Patient</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
-  </div>
-  <div class="content">
-    <div id="pat-home">
-      <div class="wbn"><h3>Hello, Thabo 👋</h3><p>Your health journey, at a glance.</p></div>
-      <div class="alrt inf"><span class="ai">📋</span><div>Your results for <strong>REQ-0847</strong> have been released by your doctor.</div></div>
-      <div class="sgrid">
-        <div class="scard"><div class="sn" style="color:var(--teal)">4</div><div class="sl">Requests</div></div>
-        <div class="scard"><div class="sn" style="color:var(--green)">1</div><div class="sl">Results Ready</div></div>
-        <div class="scard"><div class="sn" style="color:var(--amber)">1</div><div class="sl">In Progress</div></div>
-        <div class="scard"><div class="sn" style="color:var(--purple)">2</div><div class="sl">Doctors</div></div>
-      </div>
-      <div class="shd"><div><h2>My Requests</h2></div></div>
-      <div class="card">
-        <div class="lrow" onclick="openM('m-patres')" style="cursor:pointer"><div class="lic gn">📋</div><div class="lb"><div class="lt">REQ-2026-0847</div><div class="ls">Dr. Dlamini · FBC + Coagulation · 5 Mar</div></div><div class="le"><span class="pill rel">Ready</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0831</div><div class="ls">Dr. Dlamini · FBC · 15 Feb</div></div><div class="le"><span class="pill com">Released</span></div></div>
-        <div class="lrow"><div class="lic tl">📋</div><div class="lb"><div class="lt">REQ-2026-0819</div><div class="ls">Dr. Pretorius · Coagulation · 3 Jan</div></div><div class="le"><span class="pill com">Released</span></div></div>
-      </div>
-      <div class="shd"><div><h2>Haemoglobin Trend</h2><div class="ss">Last 6 months</div></div></div>
-      <div class="card">
-        <svg class="gsvg" viewBox="0 0 300 90">
-          <defs><linearGradient id="hbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0891b2" stop-opacity=".18"/><stop offset="100%" stop-color="#0891b2" stop-opacity="0"/></linearGradient></defs>
-          <rect x="10" y="30" width="280" height="22" fill="rgba(5,150,105,.06)" rx="2"/>
-          <line x1="10" y1="30" x2="290" y2="30" stroke="#059669" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
-          <line x1="10" y1="52" x2="290" y2="52" stroke="#059669" stroke-width="1" stroke-dasharray="3,3" opacity=".4"/>
-          <text x="292" y="33" fill="#059669" font-size="7" font-family="JetBrains Mono">17</text>
-          <text x="292" y="55" fill="#059669" font-size="7" font-family="JetBrains Mono">12</text>
-          <path d="M20,50 L65,46 L115,44 L165,48 L215,40 L265,18 L290,15" fill="none" stroke="#0891b2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M20,50 L65,46 L115,44 L165,48 L215,40 L265,18 L290,15 L290,90 L20,90 Z" fill="url(#hbg)"/>
-          <circle cx="20" cy="50" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
-          <circle cx="65" cy="46" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
-          <circle cx="115" cy="44" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
-          <circle cx="165" cy="48" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
-          <circle cx="215" cy="40" r="3" fill="white" stroke="#0891b2" stroke-width="2"/>
-          <circle cx="265" cy="18" r="3" fill="white" stroke="#dc2626" stroke-width="2"/>
-          <circle cx="290" cy="15" r="4" fill="#dc2626"/>
-          <text x="12"  y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Sep</text>
-          <text x="56"  y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Oct</text>
-          <text x="105" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Nov</text>
-          <text x="155" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Dec</text>
-          <text x="205" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Jan</text>
-          <text x="255" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Feb</text>
-          <text x="278" y="85" fill="#94a3b8" font-size="8" font-family="JetBrains Mono">Mar</text>
-          <text x="246" y="13" fill="#dc2626" font-size="9" font-family="JetBrains Mono" font-weight="600">19.2 ⬆</text>
-        </svg>
-        <div class="alrt err" style="margin-top:10px;margin-bottom:0"><span class="ai">⚠️</span><div>Latest value 19.2 g/dL is above normal range (12–17 g/dL).</div></div>
-      </div>
-    </div>
-    <div id="pat-health" style="display:none">
-      <div class="shd"><div><h2>Medical History</h2></div></div>
-      <div class="card"><div class="card-hd" style="color:var(--red)">Chronic Conditions</div>
-        <div class="chk on"><div class="chkb" style="background:var(--red);border-color:var(--red)">✓</div><span style="font-size:13px">Polycythaemia Vera</span></div>
-        <div class="chk on"><div class="chkb" style="background:var(--red);border-color:var(--red)">✓</div><span style="font-size:13px">Hypertension</span></div>
-      </div>
-      <div class="card"><div class="card-hd" style="color:var(--amber)">Allergies</div>
-        <div class="chk on"><div class="chkb" style="background:var(--amber);border-color:var(--amber)">✓</div><span style="font-size:13px">Penicillin</span></div>
-        <div class="chk on"><div class="chkb" style="background:var(--amber);border-color:var(--amber)">✓</div><span style="font-size:13px">Latex</span></div>
-      </div>
-      <div class="card"><div class="card-hd" style="color:var(--green)">Current Medication</div>
-        <div class="chk on"><div class="chkb" style="background:var(--green);border-color:var(--green)">✓</div><span style="font-size:13px">Hydroxyurea 500mg daily</span></div>
-        <div class="chk on"><div class="chkb" style="background:var(--green);border-color:var(--green)">✓</div><span style="font-size:13px">Aspirin 100mg daily</span></div>
-      </div>
-    </div>
-    <div id="pat-access" style="display:none">
-      <div class="shd"><div><h2>Doctor Access</h2><div class="ss">Control who can view your results</div></div></div>
-      <div class="card">
-        <div class="lrow"><div class="lic tl">👨‍⚕️</div><div class="lb"><div class="lt">Dr. Amahle Dlamini</div><div class="ls">MP0123456 · Haematologist</div></div><div class="le"><button class="btn bdr" style="font-size:11px">Revoke</button></div></div>
-        <div class="lrow"><div class="lic tl">👩‍⚕️</div><div class="lb"><div class="lt">Dr. Johan Pretorius</div><div class="ls">MP0234567 · Haematologist</div></div><div class="le"><button class="btn bdr" style="font-size:11px">Revoke</button></div></div>
-      </div>
-      <button class="btn bt bfull">+ Grant Access to Doctor</button>
-    </div>
-    <div id="pat-profile" style="display:none">
-      <div class="shd"><div><h2>My Profile</h2></div></div>
-      <div class="card">
-        <div class="lrow"><div class="lb"><div class="lt">Thabo Sithole</div><div class="ls">thabo.sithole@email.co.za</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">SA ID Number</div><div class="ls" style="font-family:'JetBrains Mono',monospace">9504125067082</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">Date of Birth</div><div class="ls">12 April 1985</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">Contact Number</div><div class="ls">+27 82 456 7890</div></div></div>
-        <div class="lrow"><div class="lb"><div class="lt">Home Address</div><div class="ls">14 Beach Road, Summerstrand, Gqeberha</div></div></div>
-      </div>
-      <div style="display:flex;gap:8px"><button class="btn bg" style="flex:1">Change Password</button><button class="btn bg" style="flex:1">Edit Profile</button></div>
-    </div>
-  </div>
-  <nav class="btmnav">
-    <button class="bni on" onclick="pT('home',this)"><span class="ni">🏠</span><span class="nl">Home</span></button>
-    <button class="bni" onclick="pT('health',this)"><span class="ni">🩺</span><span class="nl">Health</span></button>
-    <button class="bni" onclick="pT('access',this)"><span class="ni">🔐</span><span class="nl">Access</span></button>
-    <button class="bni" onclick="pT('profile',this)"><span class="ni">👤</span><span class="nl">Profile</span></button>
-  </nav>
-</div>
-</div>
-
-<!-- ADMIN -->
-<div class="screen" id="screen-admin">
-<div class="app">
-  <div class="topbar">
-    <div class="tb-l"><div class="tb-mark"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" width="16" height="16"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="tb-name">NMB-HLabSys</span></div>
-    <div class="tb-r"><span class="chip admin">⚙️ Admin</span><button class="tb-out btn" onclick="logout()">Logout</button></div>
-  </div>
-  <div class="content">
-    <div class="wbn"><h3>Admin Console ⚙️</h3><p>Manage reference data for the system</p></div>
-    <div class="sgrid">
-      <div class="scard"><div class="sn" style="color:var(--red)">42</div><div class="sl">Conditions</div></div>
-      <div class="scard"><div class="sn" style="color:var(--amber)">67</div><div class="sl">Allergies</div></div>
-      <div class="scard"><div class="sn" style="color:var(--green)">189</div><div class="sl">Medications</div></div>
-      <div class="scard"><div class="sn" style="color:var(--teal)">5</div><div class="sl">Sample Types</div></div>
-    </div>
-    <div class="shd"><div><h2>Reference Data</h2></div></div>
-    <div class="card">
-      <div class="lrow"><div class="lic rd">🏥</div><div class="lb"><div class="lt">Medical Conditions</div><div class="ls">42 conditions · 6 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
-      <div class="lrow"><div class="lic am">⚠️</div><div class="lb"><div class="lt">Allergies</div><div class="ls">67 entries · 4 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
-      <div class="lrow"><div class="lic gn">💊</div><div class="lb"><div class="lt">Medications</div><div class="ls">189 medications · 12 categories</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
-      <div class="lrow"><div class="lic tl">🩸</div><div class="lb"><div class="lt">Sample Types</div><div class="ls">Whole Blood, Plasma, Serum, Bone Marrow, Urine</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
-      <div class="lrow"><div class="lic nv">📐</div><div class="lb"><div class="lt">Units of Measurement</div><div class="ls">µL, g/dL, x10³/µL, seconds, %…</div></div><div class="le"><button class="btn bt" style="font-size:11px;padding:7px 12px">Manage</button></div></div>
+    <button class="btn-primary" onclick="doLogin()">Sign In</button>
+    <div class="demo-hint">
+      <p><strong>Demo Credentials (all roles)</strong><br/>
+      Any email · Password: <strong>Lab@2025!</strong><br/>
+      Select a role tab above to demo that dashboard</p>
     </div>
   </div>
 </div>
+
+<!-- ============ MODAL ============ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <h3 id="modalTitle">Modal</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
 </div>
 
-<!-- MODALS -->
-<div class="ov" id="m-newreq" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📋 New Test Request</div>
-  <div class="frow"><label>Patient</label><select><option>Thabo Sithole (9504125067082)</option><option>Nomsa Dube</option><option>Pieter de Wet</option><option>Aisha Khan</option></select></div>
-  <div class="frow"><label>Urgency</label><select><option>Routine</option><option>Urgent</option><option>STAT</option></select></div>
-  <div class="frow"><label>Clinical Notes</label><textarea placeholder="Enter relevant clinical information..."></textarea></div>
-  <div class="frow"><label>Test Types</label>
-    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Full Blood Count (FBC) — EDTA Tube</span></div>
-    <div class="chk" onclick="tC(this)"><div class="chkb"></div><span style="font-size:13px">Differential Count — EDTA Tube</span></div>
-    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Coagulation Studies — Citrate Tube</span></div>
+<!-- ============ MAIN APP ============ -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h2>NMB-<span>HLab</span></h2>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="sideAvatar">M</div>
+      <div class="user-info">
+        <p id="sideUserName">Dr. Manager</p>
+        <span id="sideUserRole">lab-manager</span>
+      </div>
+    </div>
+    <nav class="sidebar-nav" id="sidebarNav"></nav>
+    <div class="sidebar-footer">
+      <button class="btn-logout" onclick="logout()">⬡ Sign Out</button>
+    </div>
   </div>
-  <div class="alrt inf" style="margin:10px 0"><span class="ai">📦</span><div><strong>Samples needed:</strong> 1× EDTA Tube, 1× Citrate Tube</div></div>
-  <div class="frow"><label>Sample Barcode(s)</label><input type="text" placeholder="e.g. BC2026-00412" style="font-family:'JetBrains Mono',monospace"></div>
-  <button class="btn bp bfull" onclick="doSub()">Submit Request →</button>
-</div></div>
 
-<div class="ov" id="m-results" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📊 Results — REQ-2026-0847</div>
-  <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px"><span class="pill com">Completed</span><span style="font-size:12px;color:var(--text3)">Thabo Sithole · 5 Mar 2026</span></div>
-  <div class="alrt err" style="margin-bottom:14px"><span class="ai">⚠️</span><div><strong>2 abnormal values</strong> in this result set.</div></div>
-  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
-  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-  <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">Normal</div></div></div>
-  <div class="divider"></div>
-  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Status Timeline</div>
-  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Submitted</div><div class="tbs">5 Mar 2026 · 08:15</div></div></div>
-  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Samples Received</div><div class="tbs">5 Mar 2026 · 09:02</div></div></div>
-  <div class="tl-row"><div class="tl-l"><div class="tl-d done"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">In Progress</div><div class="tbs">5 Mar 2026 · 09:30</div></div></div>
-  <div class="tl-row"><div class="tl-l"><div class="tl-d now"></div><div class="tl-ln"></div></div><div class="tl-b"><div class="tbl">Completed &amp; Verified</div><div class="tbs">5 Mar 2026 · 11:45</div></div></div>
-  <div class="tl-row"><div class="tl-l"><div class="tl-d"></div></div><div class="tl-b"><div class="tbl" style="color:var(--text3)">Released to Patient</div><div class="tbs">Pending</div></div></div>
-  <button class="btn bp bfull" style="margin-top:14px" onclick="closeM('m-results');openM('m-release')">Release to Patient →</button>
-</div></div>
-
-<div class="ov" id="m-release" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📤 Release Results</div>
-  <div class="frow"><label>Note to Patient</label><textarea>Your Haemoglobin is elevated and your platelet count is low. Please book an urgent appointment to discuss these results.</textarea></div>
-  <div class="frow"><label>Notification</label>
-    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><span style="font-size:13px">Email results PDF to patient</span></div>
-    <div class="chk" onclick="tC(this)"><div class="chkb"></div><span style="font-size:13px">Email patient to book appointment</span></div>
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <h3 id="topbarTitle">Dashboard</h3>
+      <div class="topbar-actions">
+        <span class="role-pill" id="topbarRole">MANAGER</span>
+        <button class="btn btn-outline btn-sm" onclick="showNotifications()">🔔 Alerts <span class="notif-dot"></span></button>
+      </div>
+    </div>
+    <div class="content" id="mainContent"></div>
   </div>
-  <button class="btn bp bfull" onclick="doRel()">Confirm Release →</button>
-</div></div>
-
-<div class="ov" id="m-receive" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📥 Receive Sample</div>
-  <div style="background:var(--teal-l);border:1px solid var(--teal-m);border-radius:var(--r-sm);padding:12px;margin-bottom:16px">
-    <div style="font-size:11px;color:var(--teal);font-weight:600;text-transform:uppercase;letter-spacing:.6px">Request</div>
-    <div style="font-size:15px;font-weight:700;margin-top:2px">REQ-2026-0850 · Aisha Khan</div>
-    <div style="font-size:12px;color:var(--text2);margin-top:2px">Coagulation Studies · Routine</div>
-  </div>
-  <div class="frow"><label>Technician Receiving</label><select><option>Zanele Mokoena (EMP-0041)</option></select></div>
-  <div class="frow"><label>Sample Barcode</label><input type="text" value="BC2026-00450" style="font-family:'JetBrains Mono',monospace"></div>
-  <div class="frow"><label>Sample Type</label><select><option>Citrate Tube (5ml)</option><option>EDTA Tube (3ml)</option></select></div>
-  <div class="frow"><label>Date &amp; Time Received</label><input type="datetime-local" value="2026-03-06T07:42"></div>
-  <button class="btn bp bfull" onclick="doRec()">Confirm Receipt →</button>
-</div></div>
-
-<div class="ov" id="m-capture" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">🔬 Capture Result</div>
-  <div class="alrt err" style="margin-bottom:12px"><span class="ai">🚨</span><div><strong>STAT · Pieter de Wet · REQ-2026-0849</strong> — Differential Count</div></div>
-  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;margin-bottom:14px;font-size:12px;line-height:1.6">
-    <strong style="color:var(--red)">⚠️ Conditions:</strong> Thrombocytopenia<br>
-    <strong style="color:var(--amber)">💊 Medication:</strong> Warfarin 5mg daily<br>
-    <strong style="color:var(--red)">🚫 Allergy:</strong> Aspirin<br>
-    <strong style="color:var(--teal)">📝 Notes:</strong> Post-chemo cycle 3. Possible blast crisis.
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <div class="frow"><label>Neutrophils (%)</label><input type="number" value="68"></div>
-    <div class="frow"><label>Lymphocytes (%)</label><input type="number" value="22"></div>
-    <div class="frow"><label>Monocytes (%)</label><input type="number" value="5"></div>
-    <div class="frow"><label>Eosinophils (%)</label><input type="number" value="3"></div>
-    <div class="frow" style="grid-column:1/-1"><label>Blasts (%)</label><input type="number" value="2" style="border-color:var(--red)"></div>
-  </div>
-  <div class="alrt err" style="margin-bottom:12px"><span class="ai">⚠️</span><div>Blasts (2%) above normal (0%). <strong>Auto-flagged ABNORMAL.</strong></div></div>
-  <div class="frow"><label>Notes</label><textarea>Blasts noted on slide review. Recommend haematologist review urgently.</textarea></div>
-  <button class="btn bp bfull" onclick="doSave()">Save Result →</button>
-</div></div>
-
-<div class="ov" id="m-verify" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">✅ Verify Result</div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">FBC · Thabo Sithole · Captured by Sipho Khumalo</div>
-  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">Normal</div></div></div>
-  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">ABNORMAL</div></div></div>
-  <div style="display:flex;gap:8px;margin-top:14px">
-    <button class="btn bp" style="flex:1;padding:12px" onclick="doVer()">✓ Approve &amp; Verify</button>
-    <button class="btn bdr" style="flex:1;padding:12px" onclick="doRet()">↩ Return</button>
-  </div>
-</div></div>
-
-<div class="ov" id="m-patres" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📊 My Results — REQ-0847</div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:12px">Dr. Amahle Dlamini · 5 March 2026</div>
-  <div style="background:var(--teal-l);border-left:3px solid var(--teal);padding:12px;border-radius:0 var(--r-sm) var(--r-sm) 0;margin-bottom:14px;font-size:13px">
-    <strong style="color:var(--teal)">Doctor's Note:</strong><br>Your Haemoglobin is elevated and your platelet count is low. Please book an urgent appointment.
-  </div>
-  <div class="rrow abn"><div><div class="rn">Haemoglobin (Hb)</div><div class="ru">g/dL · Range: 12–17</div></div><div><div class="rv" style="color:var(--red)">19.2 ⬆</div><div class="rg" style="color:var(--red)">⚠️ HIGH</div></div></div>
-  <div class="rrow"><div><div class="rn">White Cell Count</div><div class="ru">x10³/µL · Range: 4–11</div></div><div><div class="rv" style="color:var(--green)">7.4</div><div class="rg">✓ Normal</div></div></div>
-  <div class="rrow abn"><div><div class="rn">Platelet Count</div><div class="ru">x10³/µL · Range: 150–400</div></div><div><div class="rv" style="color:var(--red)">42 ⬇</div><div class="rg" style="color:var(--red)">⚠️ LOW</div></div></div>
-  <div class="rrow"><div><div class="rn">Prothrombin Time</div><div class="ru">seconds · Range: 11–13.5</div></div><div><div class="rv" style="color:var(--green)">12.8</div><div class="rg">✓ Normal</div></div></div>
-  <button class="btn bg bfull" style="margin-top:14px">📄 Download PDF Report</button>
-</div></div>
-
-<div class="ov" id="m-addtest" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">🧬 Add Test Type</div>
-  <div class="frow"><label>Test Name</label><input type="text" placeholder="e.g. Reticulocyte Count"></div>
-  <div class="frow"><label>Category</label><select><option>Full Blood Count</option><option>Differential Count</option><option>Coagulation Studies</option></select></div>
-  <div class="frow"><label>Sample Type</label><select><option>Whole Blood (EDTA)</option><option>Plasma (Citrate)</option><option>Bone Marrow</option></select></div>
-  <div class="frow"><label>Units</label><input type="text" placeholder="e.g. x10³/µL"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <div class="frow"><label>Normal Min</label><input type="number" placeholder="0.5"></div>
-    <div class="frow"><label>Normal Max</label><input type="number" placeholder="2.0"></div>
-  </div>
-  <div class="frow"><label>Turnaround Time (min)</label><input type="number" placeholder="45"></div>
-  <button class="btn bp bfull">Save Test Type →</button>
-</div></div>
-
-<div class="ov" id="m-order" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">📦 Create Stock Order</div>
-  <div class="alrt wrn" style="margin-bottom:12px"><span class="ai">⚠️</span><div><strong>3 items</strong> at or below reorder level.</div></div>
-  <div class="frow"><label>Supplier</label><select><option>BioTech Supplies</option><option>MedLab SA</option></select></div>
-  <div class="frow"><label>Order Number</label><input type="text" value="ORD-2026-043" style="font-family:'JetBrains Mono',monospace"></div>
-  <div class="frow"><label>Items</label>
-    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><div><div style="font-size:13px">EDTA Tubes (3ml)</div><div style="font-size:11px;color:var(--text2)">On hand: 42 · Reorder: 500</div></div></div>
-    <div class="chk on" onclick="tC(this)"><div class="chkb">✓</div><div><div style="font-size:13px">Citrate Tubes (5ml)</div><div style="font-size:11px;color:var(--text2)">On hand: 11 · Reorder: 300</div></div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <div class="frow"><label>Qty (EDTA)</label><input type="number" value="1000"></div>
-    <div class="frow"><label>Qty (Citrate)</label><input type="number" value="600"></div>
-  </div>
-  <button class="btn bp bfull">📧 Place Order &amp; Email Supplier →</button>
-</div></div>
-
-<div class="ov" id="m-addstaff" onclick="bgC(event,this)"><div class="sh">
-  <div class="sh-handle"></div><div class="sh-title">👤 Add Staff Member</div>
-  <div class="tabs"><button class="tab on">Doctor</button><button class="tab">Technician</button></div>
-  <div class="frow"><label>First Name</label><input type="text" placeholder="Name"></div>
-  <div class="frow"><label>Surname</label><input type="text" placeholder="Surname"></div>
-  <div class="frow"><label>HPCSA Number</label><input type="text" placeholder="MP0000000" style="font-family:'JetBrains Mono',monospace"></div>
-  <div class="frow"><label>Email Address</label><input type="email" placeholder="doctor@clinic.co.za"></div>
-  <div class="frow"><label>Contact Number</label><input type="tel" placeholder="+27 82 000 0000"></div>
-  <div class="alrt inf" style="margin-bottom:14px"><span class="ai">📧</span><div>Auto-generated password will be emailed. Doctor must change it on first login.</div></div>
-  <button class="btn bp bfull">Create Account &amp; Send Password →</button>
-</div></div>
-
-<div id="toast"></div>
+</div>
 
 <script>
-const R={manager:{e:'manager@nmbhdl.co.za',s:'screen-manager'},doctor:{e:'dlamini@clinic.co.za',s:'screen-doctor'},tech:{e:'zanele@nmbhdl.co.za',s:'screen-tech'},patient:{e:'thabo@email.co.za',s:'screen-patient'},admin:{e:'admin@nmbhdl.co.za',s:'screen-admin'}};
-let cr='manager';
-function selRole(r,b){cr=r;document.querySelectorAll('.rpill').forEach(x=>x.classList.remove('on'));b.classList.add('on');document.getElementById('l-email').value=R[r].e}
-function doLogin(){const s=R[cr].s;document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(s).classList.add('active');window.scrollTo(0,0)}
-function logout(){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById('screen-login').classList.add('active');window.scrollTo(0,0)}
-function sw(pre,n,b,sel){document.querySelectorAll('[id^="'+pre+'-"]').forEach(e=>e.style.display='none');const e=document.getElementById(pre+'-'+n);if(e)e.style.display='';document.querySelectorAll(sel).forEach(x=>x.classList.remove('on'));if(b)b.classList.add('on')}
-function mT(n,b){sw('mgr',n,b,'#screen-manager .bni')}
-function dT(n,b){sw('doc',n,b,'#screen-doctor .bni')}
-function tT(n,b){sw('tech',n,b,'#screen-tech .bni')}
-function pT(n,b){sw('pat',n,b,'#screen-patient .bni')}
-function subT(b,id){b.closest('.tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on');['st-docs','st-techs'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display=(e.id===id?'':'none')})}
-function openM(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
-function closeM(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
-function bgC(e,o){if(e.target===o){o.classList.remove('open');document.body.style.overflow=''}}
-function tC(el){el.classList.toggle('on');const b=el.querySelector('.chkb');b.textContent=el.classList.contains('on')?'✓':''}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',3200)}
-function doSub(){closeM('m-newreq');toast('✅ Request submitted! Patient notified via email.')}
-function doRel(){closeM('m-release');toast('📤 Results released! Email sent to patient.')}
-function doRec(){closeM('m-receive');toast('📥 Samples received. Request updated.')}
-function doSave(){closeM('m-capture');toast('🔬 Result saved. Awaiting verification.')}
-function doVer(){closeM('m-verify');toast('✅ Result verified! Doctor notified via email.')}
-function doRet(){closeM('m-verify');toast('↩ Result returned to technician with note.')}
+// ======= STATE =======
+let currentRole = 'manager';
+const roles = {
+  manager:    { name:'Prof. N. Mostert', email:'manager@nmbhlab.co.za', avatar:'M', label:'Lab Manager' },
+  doctor:     { name:'Dr. A. Petersen',  email:'doctor@clinic.co.za',   avatar:'D', label:'Doctor' },
+  technician: { name:'Tech. S. Nkosi',   email:'tech@nmbhlab.co.za',    avatar:'T', label:'Lab Technician' },
+  patient:    { name:'K. Mashamba',      email:'patient@gmail.com',     avatar:'P', label:'Patient' },
+  admin:      { name:'Admin User',       email:'admin@nmbhlab.co.za',   avatar:'A', label:'Admin' }
+};
+
+// ======= LOGIN =======
+function setRole(r, el) {
+  currentRole = r;
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const emails = {manager:'manager@nmbhlab.co.za',doctor:'doctor@clinic.co.za',technician:'tech@nmbhlab.co.za',patient:'patient@gmail.com',admin:'admin@nmbhlab.co.za'};
+  document.getElementById('loginEmail').value = emails[r];
+}
+function togglePw(){const i=document.getElementById('loginPw');i.type=i.type==='password'?'text':'password';}
+function doLogin(){
+  const pw = document.getElementById('loginPw').value;
+  if(!pw){alert('Enter password'); return;}
+  document.getElementById('loginScreen').classList.add('hidden');
+  setTimeout(()=>{ document.getElementById('loginScreen').style.display='none'; initApp(); },500);
+}
+function logout(){
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginScreen').style.opacity='1';
+  document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+// ======= APP INIT =======
+function initApp(){
+  const app = document.getElementById('app');
+  app.style.display='flex';
+  setTimeout(()=>app.classList.add('visible'),10);
+  const u = roles[currentRole];
+  document.getElementById('sideAvatar').textContent = u.avatar;
+  document.getElementById('sideUserName').textContent = u.name;
+  document.getElementById('sideUserRole').textContent = u.email;
+  document.getElementById('topbarRole').textContent = u.label.toUpperCase();
+  buildSidebar();
+  navigateTo(getDefaultPanel());
+}
+function getDefaultPanel(){
+  const defaults = {manager:'mgr-dashboard',doctor:'doc-dashboard',technician:'tech-dashboard',patient:'pat-dashboard',admin:'adm-dashboard'};
+  return defaults[currentRole];
+}
+
+// ======= SIDEBAR CONFIG =======
+const sidebarConfig = {
+  manager:[
+    {section:'Overview', items:[{id:'mgr-dashboard',icon:'⬡',label:'Dashboard'}]},
+    {section:'Catalogue', items:[{id:'mgr-categories',icon:'🗂',label:'Test Categories'},{id:'mgr-tests',icon:'🧪',label:'Test Types'}]},
+    {section:'Staff', items:[{id:'mgr-doctors',icon:'👨‍⚕️',label:'Doctor Users'},{id:'mgr-technicians',icon:'🔬',label:'Technician Users'}]},
+    {section:'Inventory', items:[{id:'mgr-consumables',icon:'📦',label:'Consumables',badge:'2',badgeColor:'amber'},{id:'mgr-suppliers',icon:'🏭',label:'Suppliers'},{id:'mgr-orders',icon:'📋',label:'Orders'}]},
+    {section:'Reports', items:[{id:'mgr-reports',icon:'📊',label:'Reports (PDF)'}]},
+  ],
+  doctor:[
+    {section:'Overview', items:[{id:'doc-dashboard',icon:'⬡',label:'Dashboard'}]},
+    {section:'Patients', items:[{id:'doc-patients',icon:'👥',label:'Patient Records'},{id:'doc-requests',icon:'📝',label:'Test Requests'},{id:'doc-results',icon:'📋',label:'View Results'}]},
+    {section:'Monitoring', items:[{id:'doc-alerts',icon:'🚨',label:'Alerts',badge:'3',badgeColor:'red'}]},
+    {section:'Reports', items:[{id:'doc-reports',icon:'📊',label:'Reports (PDF)'}]},
+  ],
+  technician:[
+    {section:'Overview', items:[{id:'tech-dashboard',icon:'⬡',label:'Dashboard'}]},
+    {section:'Workflow', items:[{id:'tech-receive',icon:'📥',label:'Receive Samples'},{id:'tech-process',icon:'⚗️',label:'Process Tests'},{id:'tech-results',icon:'✏️',label:'Capture Results'},{id:'tech-verify',icon:'✅',label:'Verify Results'}]},
+    {section:'Reports', items:[{id:'tech-reports',icon:'📊',label:'Reports (PDF)'}]},
+  ],
+  patient:[
+    {section:'Overview', items:[{id:'pat-dashboard',icon:'⬡',label:'My Dashboard'}]},
+    {section:'My Health', items:[{id:'pat-requests',icon:'📋',label:'My Requests'},{id:'pat-results',icon:'📈',label:'My Results'},{id:'pat-history',icon:'🏥',label:'Medical History'}]},
+    {section:'Access', items:[{id:'pat-consent',icon:'🔐',label:'Consent Management'}]},
+    {section:'Reports', items:[{id:'pat-reports',icon:'📊',label:'Reports (PDF)'}]},
+  ],
+  admin:[
+    {section:'Overview', items:[{id:'adm-dashboard',icon:'⬡',label:'Dashboard'}]},
+    {section:'Manage Lists', items:[{id:'adm-conditions',icon:'🏥',label:'Medical Conditions'},{id:'adm-allergies',icon:'⚠️',label:'Allergies'},{id:'adm-medications',icon:'💊',label:'Medications'}]},
+    {section:'System', items:[{id:'adm-users',icon:'👤',label:'All Users'},{id:'adm-audit',icon:'📜',label:'Audit Log'}]},
+  ]
+};
+
+function buildSidebar(){
+  const nav = document.getElementById('sidebarNav');
+  nav.innerHTML='';
+  (sidebarConfig[currentRole]||[]).forEach(sec=>{
+    const sl=document.createElement('div');sl.className='nav-section';
+    sl.innerHTML=`<div class="nav-section-label">${sec.section}</div>`;
+    sec.items.forEach(item=>{
+      const btn=document.createElement('button');
+      btn.className='nav-item';btn.id='nav-'+item.id;
+      btn.onclick=()=>navigateTo(item.id);
+      let badge='';
+      if(item.badge) badge=`<span class="nav-badge ${item.badgeColor||''}">${item.badge}</span>`;
+      btn.innerHTML=`<span class="icon">${item.icon}</span>${item.label}${badge}`;
+      sl.appendChild(btn);
+    });
+    nav.appendChild(sl);
+  });
+}
+
+// ======= NAVIGATION =======
+function navigateTo(panelId){
+  document.getElementById('topbarTitle').textContent = getPanelTitle(panelId);
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const navBtn = document.getElementById('nav-'+panelId);
+  if(navBtn) navBtn.classList.add('active');
+  renderPanel(panelId);
+}
+function getPanelTitle(id){
+  const titles = {
+    'mgr-dashboard':'Manager Dashboard','mgr-categories':'Test Categories','mgr-tests':'Test Types','mgr-doctors':'Doctor Users','mgr-technicians':'Technician Users','mgr-consumables':'Consumables','mgr-suppliers':'Suppliers','mgr-orders':'Stock Orders','mgr-reports':'Management Reports',
+    'doc-dashboard':'Doctor Dashboard','doc-patients':'Patient Records','doc-requests':'Test Requests','doc-results':'View Results','doc-alerts':'Abnormal Alerts','doc-reports':'Doctor Reports',
+    'tech-dashboard':'Technician Dashboard','tech-receive':'Receive Samples','tech-process':'Process Tests','tech-results':'Capture Results','tech-verify':'Verify Results','tech-reports':'Technician Reports',
+    'pat-dashboard':'My Health Dashboard','pat-requests':'My Test Requests','pat-results':'My Results','pat-history':'Medical History','pat-consent':'Consent Management','pat-reports':'My Reports',
+    'adm-dashboard':'Admin Dashboard','adm-conditions':'Medical Conditions','adm-allergies':'Allergies','adm-medications':'Medications','adm-users':'User Management','adm-audit':'Audit Log',
+  };
+  return titles[id]||id;
+}
+
+// ======= PANEL RENDERER =======
+function renderPanel(id){
+  const c=document.getElementById('mainContent');
+  c.innerHTML='';
+  const map={
+    'mgr-dashboard':mgrDashboard,'mgr-categories':mgrCategories,'mgr-tests':mgrTests,'mgr-doctors':mgrDoctors,'mgr-technicians':mgrTechnicians,'mgr-consumables':mgrConsumables,'mgr-suppliers':mgrSuppliers,'mgr-orders':mgrOrders,'mgr-reports':mgrReports,
+    'doc-dashboard':docDashboard,'doc-patients':docPatients,'doc-requests':docRequests,'doc-results':docResults,'doc-alerts':docAlerts,'doc-reports':docReports,
+    'tech-dashboard':techDashboard,'tech-receive':techReceive,'tech-process':techProcess,'tech-results':techCaptureResults,'tech-verify':techVerify,'tech-reports':techReports,
+    'pat-dashboard':patDashboard,'pat-requests':patRequests,'pat-results':patResults,'pat-history':patHistory,'pat-consent':patConsent,'pat-reports':patReports,
+    'adm-dashboard':admDashboard,'adm-conditions':admConditions,'adm-allergies':admAllergies,'adm-medications':admMedications,'adm-users':admUsers,'adm-audit':admAudit,
+  };
+  if(map[id]) map[id](c);
+  else c.innerHTML='<div class="empty"><div class="emoji">🚧</div><p>Panel under construction</p></div>';
+}
+
+// ==================== MANAGER PANELS ====================
+function mgrDashboard(c){
+  c.innerHTML=`
+  <div class="section-title">Good morning, Prof. Mostert</div>
+  <div class="section-sub">Laboratory operations overview — today</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="icon">🧪</div><div class="value">247</div><div class="label">Tests Today</div><div class="trend">↑ 12% vs yesterday</div></div>
+    <div class="stat-card green"><div class="icon">✅</div><div class="value">189</div><div class="label">Completed</div><div class="trend">↑ 8% this week</div></div>
+    <div class="stat-card amber"><div class="icon">⏳</div><div class="value">41</div><div class="label">In Progress</div></div>
+    <div class="stat-card red"><div class="icon">📦</div><div class="value">3</div><div class="label">Low Stock Items</div><div class="trend">⚠ Action needed</div></div>
+    <div class="stat-card purple"><div class="icon">👥</div><div class="value">14</div><div class="label">Active Staff</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="table-card">
+      <div class="table-header"><h4>Tests by Category (This Week)</h4></div>
+      <div style="padding:16px">
+        <div class="chart-placeholder" id="barChart"></div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header"><h4>Recent Orders</h4></div>
+      <table>
+        <thead><tr><th>Order #</th><th>Supplier</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">ORD-2025-041</td><td>LabSupply SA</td><td><span class="badge completed">Complete</span></td></tr>
+          <tr><td class="mono">ORD-2025-042</td><td>MedEquip NMB</td><td><span class="badge progress">Partially</span></td></tr>
+          <tr><td class="mono">ORD-2025-043</td><td>BioTech Ltd</td><td><span class="badge submitted">Ordered</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+  setTimeout(()=>buildBarChart(),100);
+}
+
+function buildBarChart(){
+  const el=document.getElementById('barChart');if(!el)return;
+  const data=[{l:'FBC',v:85,c:'#4f8ef7'},{l:'Coag',v:52,c:'#9f7aea'},{l:'Film',v:38,c:'#38b2ac'},{l:'Diff',v:44,c:'#f6ad55'},{l:'Other',v:28,c:'#f56565'}];
+  const max=Math.max(...data.map(d=>d.v));
+  el.innerHTML=data.map(d=>`<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1">
+    <span style="font-size:11px;color:var(--text2);font-weight:600">${d.v}</span>
+    <div style="width:100%;max-width:40px;border-radius:4px 4px 0 0;background:${d.c};opacity:0.85;height:0;transition:height 1s" data-h="${Math.round((d.v/max)*130)}px"></div>
+    <span style="font-size:10px;color:var(--text3)">${d.l}</span>
+  </div>`).join('');
+  setTimeout(()=>el.querySelectorAll('[data-h]').forEach(b=>b.style.height=b.dataset.h),50);
+}
+
+function mgrCategories(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Test Categories</div><div class="section-sub">Manage haematology test groupings</div></div>
+    <button class="btn btn-accent" onclick="openAddCategoryModal()">+ Add Category</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>All Categories</h4><input class="table-search" placeholder="Search…" oninput="filterTable(this,'catTable')"/></div>
+    <table id="catTable">
+      <thead><tr><th>Category Name</th><th>Description</th><th>Tests</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Full Blood Count</td><td>Complete red, white cell &amp; platelet analysis</td><td>8</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Differential Count</td><td>Leukocyte differential breakdown</td><td>5</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Coagulation Studies</td><td>Clotting time and factor analysis</td><td>6</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Peripheral Blood Film</td><td>Morphological examination of blood cells</td><td>4</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Bone Marrow Studies</td><td>Marrow cellularity and composition</td><td>3</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrTests(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Test Types</div><div class="section-sub">Manage individual laboratory test definitions</div></div>
+    <button class="btn btn-accent" onclick="openAddTestModal()">+ Add Test Type</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Test Catalogue</h4><input class="table-search" placeholder="Search…" oninput="filterTable(this,'testTable')"/></div>
+    <table id="testTable">
+      <thead><tr><th>Test Name</th><th>Category</th><th>Sample Type</th><th>Units</th><th>Normal Range</th><th>TAT (min)</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Haemoglobin</td><td>Full Blood Count</td><td>Whole Blood</td><td>g/dL</td><td>12.0 – 17.5</td><td>45</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>WBC Count</td><td>Full Blood Count</td><td>Whole Blood</td><td>x10³/µL</td><td>4.5 – 11.0</td><td>45</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Platelet Count</td><td>Full Blood Count</td><td>Whole Blood</td><td>x10³/µL</td><td>150 – 400</td><td>45</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>PT (Prothrombin)</td><td>Coagulation Studies</td><td>Plasma</td><td>seconds</td><td>11 – 13.5</td><td>90</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>aPTT</td><td>Coagulation Studies</td><td>Plasma</td><td>seconds</td><td>25 – 35</td><td>90</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Neutrophils %</td><td>Differential Count</td><td>Whole Blood</td><td>%</td><td>55 – 70</td><td>60</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrDoctors(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Doctor Users</div><div class="section-sub">Manage registered healthcare providers</div></div>
+    <button class="btn btn-accent" onclick="openAddDoctorModal()">+ Add Doctor</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Registered Doctors</h4><input class="table-search" placeholder="Search…" oninput="filterTable(this,'docTable')"/></div>
+    <table id="docTable">
+      <thead><tr><th>Name</th><th>HPCSA #</th><th>Email</th><th>Contact</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Dr. A. Petersen</td><td>MP0234567</td><td>a.petersen@clinic.co.za</td><td>041 555 0102</td><td><span class="badge completed">Active</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Dr. R. Jansen</td><td>MP0198432</td><td>r.jansen@health.co.za</td><td>041 555 0103</td><td><span class="badge completed">Active</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Dr. M. Dlamini</td><td>MP0312456</td><td>m.dlamini@gpe.co.za</td><td>041 555 0104</td><td><span class="badge progress">Pending PW</span></td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrTechnicians(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Lab Technicians</div><div class="section-sub">Manage laboratory staff and assigned test types</div></div>
+    <button class="btn btn-accent" onclick="openAddTechModal()">+ Add Technician</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Technician Roster</h4></div>
+    <table>
+      <thead><tr><th>Name</th><th>Employee #</th><th>SA ID</th><th>Assigned Tests</th><th>Contact</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>S. Nkosi</td><td>EMP-001</td><td>9001015800086</td><td><span class="badge submitted">FBC</span> <span class="badge routine">Diff</span></td><td>082 555 0201</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>T. Botha</td><td>EMP-002</td><td>8805125200081</td><td><span class="badge submitted">Coag</span> <span class="badge submitted">Film</span></td><td>082 555 0202</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>N. Williams</td><td>EMP-003</td><td>9203044800083</td><td><span class="badge submitted">FBC</span> <span class="badge routine">BM</span></td><td>082 555 0203</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrConsumables(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Consumables Stock</div><div class="section-sub">Monitor and manage laboratory consumable inventory</div></div>
+    <button class="btn btn-accent" onclick="openAdjustStockModal()">⊕ Adjust Stock</button>
+  </div>
+  <div class="alert warning">⚠ 2 consumables are at or near reorder level — consider placing an order.</div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Consumable</th><th>Supplier</th><th>On Hand</th><th>Reorder Level</th><th>Stock Level</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>EDTA Tubes (3mL)</td><td>LabSupply SA</td><td>850</td><td>200</td><td><div class="stock-bar"><div class="stock-fill high" style="width:85%"></div></div></td><td><button class="btn btn-outline btn-sm" onclick="openAdjustStockModal()">Adjust</button></td></tr>
+        <tr><td>Citrate Tubes</td><td>MedEquip NMB</td><td>95</td><td>100</td><td><div class="stock-bar"><div class="stock-fill low" style="width:25%"></div></div><span class="badge low" style="margin-top:2px;font-size:10px">LOW</span></td><td><button class="btn btn-outline btn-sm" onclick="openAdjustStockModal()">Adjust</button></td></tr>
+        <tr><td>Reagent A (FBC)</td><td>BioTech Ltd</td><td>32</td><td>30</td><td><div class="stock-bar"><div class="stock-fill med" style="width:35%"></div></div><span class="badge progress" style="margin-top:2px;font-size:10px">NEAR</span></td><td><button class="btn btn-outline btn-sm" onclick="openAdjustStockModal()">Adjust</button></td></tr>
+        <tr><td>Giemsa Stain</td><td>LabSupply SA</td><td>420</td><td>100</td><td><div class="stock-bar"><div class="stock-fill high" style="width:70%"></div></div></td><td><button class="btn btn-outline btn-sm" onclick="openAdjustStockModal()">Adjust</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrSuppliers(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Suppliers</div><div class="section-sub">Manage consumable suppliers</div></div>
+    <button class="btn btn-accent" onclick="openAddSupplierModal()">+ Add Supplier</button>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Supplier</th><th>Contact Person</th><th>Email</th><th>Consumables</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>LabSupply SA</td><td>Johan Meyer</td><td>orders@labsupply.co.za</td><td>8</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>MedEquip NMB</td><td>Lindiwe Dube</td><td>supply@medequip.co.za</td><td>5</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>BioTech Ltd</td><td>Pieter van Wyk</td><td>sales@biotech.co.za</td><td>3</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrOrders(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Stock Orders</div><div class="section-sub">Manage and track consumable purchase orders</div></div>
+    <button class="btn btn-accent" onclick="openCreateOrderModal()">+ Create Order</button>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Order #</th><th>Supplier</th><th>Date</th><th>Items</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">ORD-2025-041</td><td>LabSupply SA</td><td>2025-02-10</td><td>4</td><td><span class="badge completed">Complete</span></td><td><button class="btn btn-outline btn-sm">View</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">ORD-2025-042</td><td>MedEquip NMB</td><td>2025-02-18</td><td>2</td><td><span class="badge progress">Partially Complete</span></td><td><button class="btn btn-outline btn-sm">View</button> <button class="btn btn-success btn-sm" onclick="showToast('Order marked as received')">Received</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">ORD-2025-043</td><td>BioTech Ltd</td><td>2025-03-01</td><td>1</td><td><span class="badge submitted">Ordered</span></td><td><button class="btn btn-outline btn-sm">View</button> <button class="btn btn-danger btn-sm" onclick="showToast('Order cancelled')">Cancel</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function mgrReports(c){
+  c.innerHTML=`
+  <div class="section-title">Management Reports</div>
+  <div class="section-sub">Generate PDF reports for specified date ranges</div>
+  <div class="form-card">
+    <h4>Total Tests by Category — PDF Report</h4>
+    <div class="form-grid">
+      <div class="fg"><label>From Date</label><input type="date" value="2025-02-01"/></div>
+      <div class="fg"><label>To Date</label><input type="date" value="2025-03-01"/></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('📄 PDF report generated and downloaded!')">Generate PDF Report</button>
+  </div>
+  <div class="report-preview">
+    <h5>Preview — Tests by Category (Feb 2025)</h5>
+    <table style="width:100%">
+      <thead><tr><th>Category</th><th>Tests Performed</th><th>Completed</th><th>Avg TAT (min)</th></tr></thead>
+      <tbody>
+        <tr><td>Full Blood Count</td><td>342</td><td>338</td><td>43</td></tr>
+        <tr><td>Coagulation Studies</td><td>187</td><td>182</td><td>88</td></tr>
+        <tr><td>Differential Count</td><td>154</td><td>152</td><td>57</td></tr>
+        <tr><td>Peripheral Blood Film</td><td>98</td><td>95</td><td>72</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ==================== DOCTOR PANELS ====================
+function docDashboard(c){
+  c.innerHTML=`
+  <div class="section-title">Good morning, Dr. Petersen</div>
+  <div class="section-sub">Your patient and test request overview</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="icon">👥</div><div class="value">34</div><div class="label">My Patients</div></div>
+    <div class="stat-card green"><div class="icon">📝</div><div class="value">12</div><div class="label">Active Requests</div></div>
+    <div class="stat-card red"><div class="icon">🚨</div><div class="value">3</div><div class="label">Abnormal Alerts</div><div class="trend">Requires attention</div></div>
+    <div class="stat-card amber"><div class="icon">⏳</div><div class="value">5</div><div class="label">Awaiting Release</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Recent Test Requests</h4><button class="btn btn-accent btn-sm" onclick="navigateTo('doc-requests')">New Request</button></div>
+    <table>
+      <thead><tr><th>Request #</th><th>Patient</th><th>Date</th><th>Urgency</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-089</td><td>K. Mashamba</td><td>2025-03-01</td><td><span class="badge urgent">STAT</span></td><td><span class="badge verified">Verified</span></td><td><button class="btn btn-accent btn-sm" onclick="navigateTo('doc-results')">Release</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-090</td><td>P. Ndlovu</td><td>2025-03-02</td><td><span class="badge progress">Urgent</span></td><td><span class="badge progress">In Progress</span></td><td><button class="btn btn-outline btn-sm">Track</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-091</td><td>M. Jacobs</td><td>2025-03-03</td><td><span class="badge routine">Routine</span></td><td><span class="badge submitted">Submitted</span></td><td><button class="btn btn-outline btn-sm">Track</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function docPatients(c){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">Patient Records</div><div class="section-sub">Manage patients and their health information</div></div>
+    <button class="btn btn-accent" onclick="openAddPatientModal()">+ Register Patient</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>My Patients</h4><input class="table-search" placeholder="Search patients…" oninput="filterTable(this,'ptTable')"/></div>
+    <table id="ptTable">
+      <thead><tr><th>Name</th><th>SA ID</th><th>DOB</th><th>Conditions</th><th>Last Request</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>K. Mashamba</td><td>9204115800086</td><td>1992-04-11</td><td>Hypertension</td><td>2025-03-01</td><td><button class="btn btn-outline btn-sm" onclick="openPatientView()">View</button></td></tr>
+        <tr><td>P. Ndlovu</td><td>8811204200083</td><td>1988-11-20</td><td>Diabetes, Anaemia</td><td>2025-03-02</td><td><button class="btn btn-outline btn-sm" onclick="openPatientView()">View</button></td></tr>
+        <tr><td>M. Jacobs</td><td>9512034800084</td><td>1995-12-03</td><td>None</td><td>2025-03-03</td><td><button class="btn btn-outline btn-sm" onclick="openPatientView()">View</button></td></tr>
+        <tr><td>J. Fortuin</td><td>7703125400087</td><td>1977-03-12</td><td>Asthma</td><td>2025-02-20</td><td><button class="btn btn-outline btn-sm" onclick="openPatientView()">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function docRequests(c){
+  c.innerHTML=`
+  <div class="section-title">Test Requests</div>
+  <div class="section-sub">Submit and track laboratory test requests</div>
+  <div class="panel-tabs">
+    <button class="panel-tab active" onclick="switchTab(this,'reqNew','reqList')">New Request</button>
+    <button class="panel-tab" onclick="switchTab(this,'reqList','reqNew')">Request History</button>
+  </div>
+  <div id="reqNew">
+    <div class="form-card">
+      <h4>Create Test Request</h4>
+      <div class="form-grid">
+        <div class="fg"><label>Patient</label><select><option>K. Mashamba</option><option>P. Ndlovu</option><option>M. Jacobs</option></select></div>
+        <div class="fg"><label>Urgency</label><select><option>Routine</option><option>Urgent</option><option>STAT</option></select></div>
+        <div class="fg form-full"><label>Clinical Notes</label><textarea placeholder="Describe symptoms, reason for tests…"></textarea></div>
+      </div>
+      <div class="fg" style="margin-bottom:16px"><label>Select Test Types</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
+          ${['Full Blood Count','Differential Count','Coagulation (PT)','Coagulation (aPTT)','Peripheral Blood Film','Platelet Count'].map(t=>`<label style="display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text2)"><input type="checkbox" style="accent-color:var(--accent)"/> ${t}</label>`).join('')}
+        </div>
+      </div>
+      <div class="form-card" style="background:var(--bg3);margin-bottom:16px">
+        <h4 style="font-size:13px;margin-bottom:12px">Sample Barcodes</h4>
+        <div class="alert info" style="font-size:12px">📋 Required samples: EDTA Whole Blood (x1), Citrate Plasma (x1)</div>
+        <div class="form-row" style="margin-top:10px">
+          <div class="fg"><label>Barcode</label><input type="text" placeholder="Scan or type barcode…" value="BC-2025-03-0441"/></div>
+          <div class="fg"><label>Sample Type</label><select><option>Whole Blood (EDTA)</option><option>Citrate Plasma</option></select></div>
+          <button class="btn btn-outline" style="align-self:flex-end;white-space:nowrap">+ Add Sample</button>
+        </div>
+      </div>
+      <button class="btn btn-accent" onclick="showToast('✅ Test request submitted! Patient notified via email.')">Submit Request</button>
+    </div>
+  </div>
+  <div id="reqList" style="display:none">
+    <div class="table-card">
+      <table>
+        <thead><tr><th>Request #</th><th>Patient</th><th>Date</th><th>Urgency</th><th>Tests</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family:'DM Mono',monospace">REQ-2025-089</td><td>K. Mashamba</td><td>2025-03-01</td><td><span class="badge urgent">STAT</span></td><td>FBC, Diff</td><td><span class="badge verified">Verified</span></td></tr>
+          <tr><td style="font-family:'DM Mono',monospace">REQ-2025-090</td><td>P. Ndlovu</td><td>2025-03-02</td><td><span class="badge progress">Urgent</span></td><td>Coag, FBC</td><td><span class="badge progress">In Progress</span></td></tr>
+          <tr><td style="font-family:'DM Mono',monospace">REQ-2025-091</td><td>M. Jacobs</td><td>2025-03-03</td><td><span class="badge routine">Routine</span></td><td>FBC</td><td><span class="badge submitted">Submitted</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function docResults(c){
+  c.innerHTML=`
+  <div class="section-title">Test Results</div>
+  <div class="section-sub">View and release results to patients</div>
+  <div class="form-card">
+    <h4>REQ-2025-089 — K. Mashamba — 2025-03-01 <span class="badge urgent" style="margin-left:8px">STAT</span> <span class="badge verified" style="margin-left:4px">Verified</span></h4>
+    <div class="alert warning">⚠ 2 abnormal results detected — highlighted below</div>
+    <div class="result-card">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px;font-family:'DM Mono',monospace">FULL BLOOD COUNT</div>
+      <div class="result-row"><span class="result-name">Haemoglobin</span><span class="result-value abnormal">9.2 g/dL ⚠</span><span class="result-range">Normal: 12.0–17.5 g/dL</span></div>
+      <div class="result-row"><span class="result-name">WBC Count</span><span class="result-value normal-val">7.8 x10³/µL</span><span class="result-range">Normal: 4.5–11.0 x10³/µL</span></div>
+      <div class="result-row"><span class="result-name">Platelet Count</span><span class="result-value abnormal">88 x10³/µL ⚠</span><span class="result-range">Normal: 150–400 x10³/µL</span></div>
+      <div class="result-row"><span class="result-name">MCV</span><span class="result-value normal-val">86.4 fL</span><span class="result-range">Normal: 80–100 fL</span></div>
+    </div>
+    <div class="fg" style="margin-bottom:16px"><label>Note to Patient</label><textarea placeholder="e.g. Please make an appointment to discuss these results…"></textarea></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-accent" onclick="showToast('✅ Results released! Patient notified via email with PDF.')">Release to Patient</button>
+      <button class="btn btn-outline" onclick="showToast('📄 PDF generated!')">Download PDF</button>
+    </div>
+  </div>`;
+}
+
+function docAlerts(c){
+  c.innerHTML=`
+  <div class="section-title">Abnormal Result Alerts</div>
+  <div class="section-sub">Abnormal results from the last 5 days</div>
+  <div class="form-row" style="margin-bottom:20px;gap:12px">
+    <div class="fg"><label>From</label><input type="date" value="2025-02-26"/></div>
+    <div class="fg"><label>To</label><input type="date" value="2025-03-03"/></div>
+    <button class="btn btn-accent" style="align-self:flex-end">Filter</button>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Patient</th><th>Test</th><th>Result</th><th>Normal Range</th><th>Request #</th><th>Date</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>K. Mashamba</td><td>Haemoglobin</td><td><span style="color:var(--red);font-weight:600">9.2 g/dL</span></td><td>12.0–17.5</td><td style="font-family:'DM Mono',monospace">REQ-089</td><td>2025-03-01</td><td><button class="btn btn-accent btn-sm" onclick="navigateTo('doc-results')">View</button></td></tr>
+        <tr><td>K. Mashamba</td><td>Platelet Count</td><td><span style="color:var(--red);font-weight:600">88 x10³/µL</span></td><td>150–400</td><td style="font-family:'DM Mono',monospace">REQ-089</td><td>2025-03-01</td><td><button class="btn btn-accent btn-sm" onclick="navigateTo('doc-results')">View</button></td></tr>
+        <tr><td>P. Ndlovu</td><td>PT (Prothrombin)</td><td><span style="color:var(--red);font-weight:600">18.2 sec</span></td><td>11–13.5</td><td style="font-family:'DM Mono',monospace">REQ-090</td><td>2025-03-02</td><td><button class="btn btn-outline btn-sm">View</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function docReports(c){
+  c.innerHTML=`
+  <div class="section-title">Doctor Reports</div>
+  <div class="section-sub">Generate PDF reports for your submitted test requests</div>
+  <div class="form-card">
+    <h4>All Test Requests — PDF Report</h4>
+    <div class="form-grid">
+      <div class="fg"><label>From Date</label><input type="date" value="2025-02-01"/></div>
+      <div class="fg"><label>To Date</label><input type="date" value="2025-03-03"/></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('📄 PDF report generated!')">Generate PDF Report</button>
+  </div>
+  <div class="report-preview">
+    <h5>Preview — My Requests (Feb–Mar 2025)</h5>
+    <table style="width:100%">
+      <thead><tr><th>Request #</th><th>Patient</th><th>Date</th><th>Tests</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-089</td><td>K. Mashamba</td><td>2025-03-01</td><td>FBC, Diff</td><td><span class="badge verified">Verified</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-090</td><td>P. Ndlovu</td><td>2025-03-02</td><td>Coag, FBC</td><td><span class="badge progress">In Progress</span></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ==================== TECHNICIAN PANELS ====================
+function techDashboard(c){
+  c.innerHTML=`
+  <div class="section-title">Technician Dashboard</div>
+  <div class="section-sub">S. Nkosi — Employee EMP-001 — Assigned: FBC, Differential Count</div>
+  <div class="workload-grid">
+    <div class="workload-card"><div class="workload-icon wc-blue">🔬</div><div><div class="num">7</div><div class="lbl">Tests In Progress</div></div></div>
+    <div class="workload-card"><div class="workload-icon wc-amber">📥</div><div><div class="num">12</div><div class="lbl">Waiting to be Selected</div></div></div>
+    <div class="workload-card"><div class="workload-icon wc-purple">✅</div><div><div class="num">4</div><div class="lbl">Waiting Verification</div></div></div>
+    <div class="workload-card"><div class="workload-icon wc-red">🔁</div><div><div class="num">2</div><div class="lbl">To Be Reviewed</div></div></div>
+    <div class="workload-card"><div class="workload-icon wc-red">🚨</div><div><div class="num">3</div><div class="lbl">STAT Tests</div></div></div>
+    <div class="workload-card"><div class="workload-icon wc-red">⏰</div><div><div class="num">1</div><div class="lbl">Overdue Tests</div></div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>My Active Tests</h4></div>
+    <table>
+      <thead><tr><th>Request #</th><th>Patient</th><th>Test</th><th>Urgency</th><th>Due By</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-089</td><td>K. Mashamba</td><td>Full Blood Count</td><td><span class="badge urgent">STAT</span></td><td><span class="overdue">08:30 ⚠ OVERDUE</span></td><td><span class="badge progress">In Progress</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-090</td><td>P. Ndlovu</td><td>Differential Count</td><td><span class="badge progress">Urgent</span></td><td>14:00</td><td><span class="badge progress">In Progress</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-091</td><td>M. Jacobs</td><td>Full Blood Count</td><td><span class="badge routine">Routine</span></td><td>16:00</td><td><span class="badge submitted">Selected</span></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function techReceive(c){
+  c.innerHTML=`
+  <div class="section-title">Receive Samples</div>
+  <div class="section-sub">Verify and log incoming patient samples</div>
+  <div class="form-card">
+    <h4>Sample Verification Form</h4>
+    <div class="form-grid">
+      <div class="fg"><label>Request Number</label><input type="text" placeholder="REQ-2025-…" value="REQ-2025-092"/></div>
+      <div class="fg"><label>Receiving Technician</label><input type="text" value="S. Nkosi (EMP-001)" readonly/></div>
+      <div class="fg"><label>Sample Barcode</label><input type="text" placeholder="Scan barcode…" value="BC-2025-03-0441"/></div>
+      <div class="fg"><label>Sample Type</label><select><option>Whole Blood (EDTA)</option><option>Citrate Plasma</option><option>Bone Marrow</option></select></div>
+      <div class="fg"><label>Date Received</label><input type="date" value="2025-03-03"/></div>
+      <div class="fg"><label>Time Received</label><input type="time" value="09:14"/></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('✅ Sample received! Request status updated to Samples Received.')">Confirm Receipt</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Today's Received Samples</h4></div>
+    <table>
+      <thead><tr><th>Barcode</th><th>Request #</th><th>Patient</th><th>Sample Type</th><th>Time Received</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">BC-2025-03-0438</td><td>REQ-089</td><td>K. Mashamba</td><td>Whole Blood</td><td>07:42</td><td><span class="badge completed">Received</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">BC-2025-03-0439</td><td>REQ-090</td><td>P. Ndlovu</td><td>Citrate Plasma</td><td>08:15</td><td><span class="badge completed">Received</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">BC-2025-03-0440</td><td>REQ-091</td><td>M. Jacobs</td><td>Whole Blood</td><td>09:02</td><td><span class="badge completed">Received</span></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function techProcess(c){
+  c.innerHTML=`
+  <div class="section-title">Process Tests</div>
+  <div class="section-sub">Select and begin tests assigned to your profile (FBC, Differential Count)</div>
+  <div class="table-card">
+    <div class="table-header"><h4>Available Tests</h4>
+      <div style="display:flex;gap:8px">
+        <select style="padding:6px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-family:'DM Sans',sans-serif;font-size:12px"><option>All Urgency</option><option>STAT</option><option>Urgent</option><option>Routine</option></select>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>Request #</th><th>Patient</th><th>Test</th><th>Urgency</th><th>Clinical Notes</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-089</td><td>K. Mashamba</td><td>Full Blood Count</td><td><span class="badge urgent">STAT</span></td><td>Fatigue, pallor</td><td><button class="btn btn-accent btn-sm" onclick="showToast('✅ Test selected! Consumables deducted from stock. Status → In Progress')">Select &amp; Start</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-091</td><td>M. Jacobs</td><td>Full Blood Count</td><td><span class="badge routine">Routine</span></td><td>Annual checkup</td><td><button class="btn btn-accent btn-sm" onclick="showToast('✅ Test selected! Consumables deducted from stock.')">Select &amp; Start</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-092</td><td>J. Fortuin</td><td>Differential Count</td><td><span class="badge progress">Urgent</span></td><td>Suspected infection</td><td><button class="btn btn-accent btn-sm" onclick="showToast('✅ Test selected!')">Select &amp; Start</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function techCaptureResults(c){
+  c.innerHTML=`
+  <div class="section-title">Capture Results</div>
+  <div class="section-sub">Record test results — abnormal values flagged automatically</div>
+  <div class="form-card">
+    <h4>REQ-2025-089 — Full Blood Count — K. Mashamba</h4>
+    <div class="alert info" style="margin-bottom:16px">💊 Patient conditions: Hypertension · Current meds: Amlodipine 5mg · Allergies: Penicillin<br/>🩺 Clinical notes: Fatigue and pallor for 2 weeks</div>
+    <div id="resultInputs">
+      ${[{n:'Haemoglobin',u:'g/dL',min:12,max:17.5,v:'9.2'},{n:'WBC Count',u:'x10³/µL',min:4.5,max:11,v:'7.8'},{n:'Platelet Count',u:'x10³/µL',min:150,max:400,v:'88'},{n:'MCV',u:'fL',min:80,max:100,v:'86.4'},{n:'MCH',u:'pg',min:27,max:33,v:'28.1'}].map(r=>{
+        const val=parseFloat(r.v);const abn=val<r.min||val>r.max;
+        return `<div class="result-row"><span class="result-name">${r.n}</span>
+          <input type="number" value="${r.v}" step="0.1" style="width:100px;padding:6px 10px;background:var(--bg3);border:1px solid ${abn?'var(--red)':'var(--border)'};border-radius:var(--radius-sm);color:${abn?'var(--red)':'var(--text)'};font-family:'DM Mono',monospace;font-size:13px;outline:none" oninput="checkAbnormal(this,${r.min},${r.max})"/>
+          <span class="result-range">${r.u} · Range: ${r.min}–${r.max}</span>
+          ${abn?'<span class="badge cancelled" style="font-size:10px">ABNORMAL ⚠</span>':'<span class="badge completed" style="font-size:10px">Normal</span>'}
+        </div>`;}).join('')}
+    </div>
+    <div class="fg" style="margin-top:16px;margin-bottom:16px"><label>Technician Notes</label><textarea placeholder="Any observations or notes about this result…"></textarea></div>
+    <button class="btn btn-accent" onclick="showToast('✅ Results captured! Status → Completed. Awaiting verification.')">Submit Results</button>
+  </div>`;
+}
+
+function techVerify(c){
+  c.innerHTML=`
+  <div class="section-title">Verify Results</div>
+  <div class="section-sub">Two-step verification — you cannot verify your own results</div>
+  <div class="table-card">
+    <div class="table-header"><h4>Results Awaiting Verification</h4></div>
+    <table>
+      <thead><tr><th>Request #</th><th>Patient</th><th>Test</th><th>Performed By</th><th>Completed</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-087</td><td>J. Fortuin</td><td>Differential Count</td><td>T. Botha (EMP-002)</td><td>2025-03-02 14:30</td><td>
+          <button class="btn btn-success btn-sm" onclick="showToast('✅ Results verified! Doctor notified with PDF.')">Verify</button>
+          <button class="btn btn-danger btn-sm" onclick="openReturnModal()">Return</button></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-088</td><td>L. Swarts</td><td>Full Blood Count</td><td>N. Williams (EMP-003)</td><td>2025-03-02 16:10</td><td>
+          <button class="btn btn-success btn-sm" onclick="showToast('✅ Results verified!')">Verify</button>
+          <button class="btn btn-danger btn-sm" onclick="openReturnModal()">Return</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function techReports(c){
+  c.innerHTML=`
+  <div class="section-title">Technician Reports</div>
+  <div class="section-sub">Generate PDF reports for tests you completed</div>
+  <div class="form-card">
+    <h4>Tests Completed by Category — PDF Report</h4>
+    <div class="form-grid">
+      <div class="fg"><label>From Date</label><input type="date" value="2025-02-01"/></div>
+      <div class="fg"><label>To Date</label><input type="date" value="2025-03-03"/></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('📄 PDF report generated!')">Generate PDF Report</button>
+  </div>
+  <div class="report-preview">
+    <h5>Preview — S. Nkosi Completed Tests (Feb–Mar 2025)</h5>
+    <table style="width:100%">
+      <thead><tr><th>Category</th><th>Tests Completed</th><th>Verified</th><th>Returned</th></tr></thead>
+      <tbody>
+        <tr><td>Full Blood Count</td><td>67</td><td>65</td><td>2</td></tr>
+        <tr><td>Differential Count</td><td>34</td><td>33</td><td>1</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ==================== PATIENT PANELS ====================
+function patDashboard(c){
+  c.innerHTML=`
+  <div class="section-title">Hello, Khutsiso</div>
+  <div class="section-sub">Your personal health and test results overview</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="icon">📋</div><div class="value">8</div><div class="label">Total Requests</div></div>
+    <div class="stat-card green"><div class="icon">✅</div><div class="value">6</div><div class="label">Results Available</div></div>
+    <div class="stat-card amber"><div class="icon">⏳</div><div class="value">1</div><div class="label">Pending</div></div>
+    <div class="stat-card purple"><div class="icon">🏥</div><div class="value">1</div><div class="label">Medical Conditions</div></div>
+  </div>
+  <div class="graph-area">
+    <h5>Haemoglobin Trend (Last 6 Tests)</h5>
+    <div class="sparkline" id="sparkLine"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px">
+      ${['Oct','Nov','Dec','Jan','Feb','Mar'].map(m=>`<span style="font-size:10px;color:var(--text3);flex:1;text-align:center">${m}</span>`).join('')}
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const vals=[72,68,74,65,72,58];const max=Math.max(...vals);
+    const sl=document.getElementById('sparkLine');
+    if(sl) sl.innerHTML=vals.map(v=>`<div style="flex:1;border-radius:2px 2px 0 0;background:linear-gradient(to top,var(--accent),var(--purple));opacity:0.75;height:0;transition:height 1s" data-h="${Math.round((v/max)*75)}px"></div>`).join('');
+    setTimeout(()=>sl&&sl.querySelectorAll('[data-h]').forEach(b=>b.style.height=b.dataset.h),50);
+  },100);
+}
+
+function patRequests(c){
+  c.innerHTML=`
+  <div class="section-title">My Test Requests</div>
+  <div class="section-sub">Track all your laboratory requests</div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Request #</th><th>Doctor</th><th>Date</th><th>Tests</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-089</td><td>Dr. Petersen</td><td>2025-03-01</td><td>FBC, Diff</td><td><span class="badge released">Released</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-084</td><td>Dr. Petersen</td><td>2025-02-12</td><td>Coag</td><td><span class="badge released">Released</span></td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">REQ-2025-078</td><td>Dr. Jansen</td><td>2025-01-25</td><td>FBC</td><td><span class="badge released">Released</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="form-card" style="margin-top:20px">
+    <h4>Request Progress — REQ-2025-089</h4>
+    <div class="timeline">
+      <div class="timeline-step"><div class="tl-dot done">✓</div><div class="tl-content"><p>Request Submitted</p><span>2025-03-01 07:30 by Dr. Petersen</span></div></div>
+      <div class="timeline-step"><div class="tl-dot done">✓</div><div class="tl-content"><p>Samples Received</p><span>2025-03-01 07:42 at laboratory</span></div></div>
+      <div class="timeline-step"><div class="tl-dot done">✓</div><div class="tl-content"><p>Testing In Progress</p><span>2025-03-01 08:00 — S. Nkosi</span></div></div>
+      <div class="timeline-step"><div class="tl-dot done">✓</div><div class="tl-content"><p>Results Completed &amp; Verified</p><span>2025-03-01 09:15</span></div></div>
+      <div class="timeline-step"><div class="tl-dot active">●</div><div class="tl-content"><p>Released by Doctor</p><span>Results available to view</span></div></div>
+    </div>
+  </div>`;
+}
+
+function patResults(c){
+  c.innerHTML=`
+  <div class="section-title">My Results</div>
+  <div class="section-sub">View released test results</div>
+  <div class="result-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div><strong>REQ-2025-089</strong> — Full Blood Count — 2025-03-01</div>
+      <button class="btn btn-outline btn-sm" onclick="showToast('📄 PDF downloaded!')">⬇ Download PDF</button>
+    </div>
+    <div class="result-row"><span class="result-name">Haemoglobin</span><span class="result-value abnormal">9.2 g/dL ⚠</span><span class="result-range">Normal: 12.0–17.5</span></div>
+    <div class="result-row"><span class="result-name">WBC Count</span><span class="result-value normal-val">7.8 x10³/µL</span><span class="result-range">Normal: 4.5–11.0</span></div>
+    <div class="result-row"><span class="result-name">Platelet Count</span><span class="result-value abnormal">88 x10³/µL ⚠</span><span class="result-range">Normal: 150–400</span></div>
+    <div style="margin-top:12px;padding:10px;background:var(--bg2);border-radius:var(--radius-sm);font-size:13px;color:var(--text2)">
+      <strong style="color:var(--text)">Doctor's Note:</strong> Please make an appointment to discuss these results at your earliest convenience.
+    </div>
+  </div>
+  <div class="graph-area" style="margin-top:20px">
+    <h5>Haemoglobin Over Time — Track your trend</h5>
+    <div class="sparkline" id="resultSparkline"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px">
+      ${['Oct','Nov','Dec','Jan','Feb','Mar'].map(m=>`<span style="font-size:10px;color:var(--text3);flex:1;text-align:center">${m}</span>`).join('')}
+    </div>
+  </div>`;
+  setTimeout(()=>{
+    const vals=[13.1,12.8,12.3,11.5,10.8,9.2];const max=Math.max(...vals);
+    const sl=document.getElementById('resultSparkline');
+    if(sl){sl.innerHTML=vals.map((v,i)=>`<div style="flex:1;border-radius:2px 2px 0 0;background:${v<12?'var(--red)':'var(--accent)'};opacity:0.75;height:0;transition:height 1s" data-h="${Math.round((v/max)*75)}px"></div>`).join('');
+    setTimeout(()=>sl.querySelectorAll('[data-h]').forEach(b=>b.style.height=b.dataset.h),50);}
+  },100);
+}
+
+function patHistory(c){
+  c.innerHTML=`
+  <div class="section-title">Medical History</div>
+  <div class="section-sub">Manage your health information shared with your doctors</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+    <div class="form-card">
+      <h4>Chronic Conditions</h4>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--radius-sm);font-size:13px"><span>Hypertension</span><button class="btn btn-danger btn-sm">Remove</button></div>
+      </div>
+      <div class="form-row"><div class="fg"><input placeholder="Add condition…"/></div><button class="btn btn-accent btn-sm" onclick="showToast('Condition added!')">Add</button></div>
+    </div>
+    <div class="form-card">
+      <h4>Allergies</h4>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--radius-sm);font-size:13px"><span>Penicillin</span><button class="btn btn-danger btn-sm">Remove</button></div>
+      </div>
+      <div class="form-row"><div class="fg"><input placeholder="Add allergy…"/></div><button class="btn btn-accent btn-sm" onclick="showToast('Allergy added!')">Add</button></div>
+    </div>
+    <div class="form-card">
+      <h4>Current Medication</h4>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--bg3);border-radius:var(--radius-sm);font-size:13px"><span>Amlodipine 5mg</span><button class="btn btn-danger btn-sm">Remove</button></div>
+      </div>
+      <div class="form-row"><div class="fg"><input placeholder="Add medication…"/></div><button class="btn btn-accent btn-sm" onclick="showToast('Medication added!')">Add</button></div>
+    </div>
+  </div>`;
+}
+
+function patConsent(c){
+  c.innerHTML=`
+  <div class="section-title">Consent Management</div>
+  <div class="section-sub">Control which doctors can access your test results</div>
+  <div class="form-card">
+    <h4>Grant Access to a Doctor</h4>
+    <div class="form-grid">
+      <div class="fg"><label>Doctor</label><select><option>Dr. A. Petersen</option><option>Dr. R. Jansen</option><option>Dr. M. Dlamini</option></select></div>
+      <div class="fg"><label>Select Requests to Share</label><select multiple style="height:80px"><option>REQ-2025-089</option><option>REQ-2025-084</option><option>REQ-2025-078</option></select></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('✅ Access granted! Doctor notified via email.')">Grant Access</button>
+  </div>
+  <div class="form-card" style="margin-top:4px">
+    <h4>Current Access Grants</h4>
+    <div class="patient-consent-card"><div><strong>Dr. A. Petersen</strong><div style="font-size:12px;color:var(--text3)">Access to: REQ-089, REQ-084, REQ-078</div></div><button class="btn btn-danger btn-sm" onclick="showToast('Access revoked. Doctor notified.')">Revoke</button></div>
+    <div class="patient-consent-card"><div><strong>Dr. R. Jansen</strong><div style="font-size:12px;color:var(--text3)">Access to: REQ-078</div></div><button class="btn btn-danger btn-sm" onclick="showToast('Access revoked.')">Revoke</button></div>
+  </div>`;
+}
+
+function patReports(c){
+  c.innerHTML=`
+  <div class="section-title">My Reports</div>
+  <div class="section-sub">Download your test result history as PDF</div>
+  <div class="form-card">
+    <h4>All Results by Category — PDF Report</h4>
+    <div class="form-grid">
+      <div class="fg"><label>From Date</label><input type="date" value="2025-01-01"/></div>
+      <div class="fg"><label>To Date</label><input type="date" value="2025-03-03"/></div>
+    </div>
+    <button class="btn btn-accent" onclick="showToast('📄 PDF report downloaded!')">Download PDF</button>
+  </div>`;
+}
+
+// ==================== ADMIN PANELS ====================
+function admDashboard(c){
+  c.innerHTML=`
+  <div class="section-title">Admin Dashboard</div>
+  <div class="section-sub">System list management overview</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="icon">🏥</div><div class="value">42</div><div class="label">Medical Conditions</div></div>
+    <div class="stat-card"><div class="icon">⚠️</div><div class="value">28</div><div class="label">Allergies</div></div>
+    <div class="stat-card"><div class="icon">💊</div><div class="value">76</div><div class="label">Medications</div></div>
+    <div class="stat-card purple"><div class="icon">👤</div><div class="value">56</div><div class="label">Total System Users</div></div>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>Recent Audit Events</h4></div>
+    <table>
+      <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Entity</th></tr></thead>
+      <tbody>
+        <tr><td>09:14</td><td>S. Nkosi</td><td>Received sample</td><td>REQ-092</td></tr>
+        <tr><td>08:52</td><td>Dr. Petersen</td><td>Released results</td><td>REQ-089</td></tr>
+        <tr><td>08:30</td><td>T. Botha</td><td>Captured results</td><td>REQ-087</td></tr>
+        <tr><td>08:15</td><td>Manager</td><td>Created order</td><td>ORD-043</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function admListPanel(c, title, data, cat){
+  c.innerHTML=`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <div><div class="section-title">${title}</div><div class="section-sub">Manage system ${title.toLowerCase()} list</div></div>
+    <button class="btn btn-accent" onclick="openAddListModal('${title}')">+ Add ${title.slice(0,-1)}</button>
+  </div>
+  <div class="table-card">
+    <div class="table-header"><h4>${title}</h4><input class="table-search" placeholder="Search…" oninput="filterTable(this,'admList')"/></div>
+    <table id="admList">
+      <thead><tr><th>Name</th><th>Category</th><th>Description</th><th>Actions</th></tr></thead>
+      <tbody>${data.map(d=>`<tr><td>${d.n}</td><td><span class="badge routine">${d.c}</span></td><td>${d.d}</td><td><button class="btn btn-outline btn-sm">Edit</button> <button class="btn btn-danger btn-sm">Delete</button></td></tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+
+function admConditions(c){
+  admListPanel(c,'Medical Conditions',[
+    {n:'Hypertension',c:'Cardiovascular',d:'High blood pressure'},
+    {n:'Diabetes Mellitus Type 2',c:'Endocrine',d:'Insulin resistance'},
+    {n:'Anaemia',c:'Haematological',d:'Low red blood cell count'},
+    {n:'Asthma',c:'Respiratory',d:'Chronic airway inflammation'},
+    {n:'Chronic Kidney Disease',c:'Renal',d:'Progressive kidney function loss'},
+  ]);
+}
+function admAllergies(c){
+  admListPanel(c,'Allergies',[
+    {n:'Penicillin',c:'Antibiotic',d:'Common antibiotic allergy'},
+    {n:'Latex',c:'Material',d:'Natural rubber allergy'},
+    {n:'Aspirin',c:'NSAID',d:'Salicylate sensitivity'},
+    {n:'Sulfa drugs',c:'Antibiotic',d:'Sulphonamide allergy'},
+  ]);
+}
+function admMedications(c){
+  admListPanel(c,'Medications',[
+    {n:'Amlodipine',c:'Antihypertensive',d:'Calcium channel blocker'},
+    {n:'Metformin',c:'Antidiabetic',d:'Biguanide class'},
+    {n:'Warfarin',c:'Anticoagulant',d:'Vitamin K antagonist'},
+    {n:'Ferrous Sulphate',c:'Iron supplement',d:'Iron deficiency treatment'},
+  ]);
+}
+
+function admUsers(c){
+  c.innerHTML=`
+  <div class="section-title">User Management</div>
+  <div class="section-sub">All system users across roles</div>
+  <div class="table-card">
+    <div class="table-header"><h4>All Users</h4><input class="table-search" placeholder="Search…" oninput="filterTable(this,'userTable')"/></div>
+    <table id="userTable">
+      <thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Status</th><th>Last Login</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td>Prof. N. Mostert</td><td><span class="badge submitted">Manager</span></td><td>manager@nmbhlab.co.za</td><td><span class="badge completed">Active</span></td><td>Today 08:00</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>Dr. A. Petersen</td><td><span class="badge routine">Doctor</span></td><td>doctor@clinic.co.za</td><td><span class="badge completed">Active</span></td><td>Today 08:30</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>S. Nkosi</td><td><span class="badge progress">Technician</span></td><td>tech@nmbhlab.co.za</td><td><span class="badge completed">Active</span></td><td>Today 07:45</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+        <tr><td>K. Mashamba</td><td><span class="badge verified">Patient</span></td><td>patient@gmail.com</td><td><span class="badge completed">Active</span></td><td>2025-03-02</td><td><button class="btn btn-outline btn-sm">Edit</button></td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function admAudit(c){
+  c.innerHTML=`
+  <div class="section-title">Audit Log</div>
+  <div class="section-sub">System-wide activity trail</div>
+  <div class="form-row" style="margin-bottom:16px;gap:12px">
+    <div class="fg"><label>From</label><input type="date" value="2025-03-01"/></div>
+    <div class="fg"><label>To</label><input type="date" value="2025-03-03"/></div>
+    <div class="fg"><label>User</label><select><option>All Users</option><option>S. Nkosi</option><option>Dr. Petersen</option></select></div>
+    <button class="btn btn-accent" style="align-self:flex-end">Filter</button>
+  </div>
+  <div class="table-card">
+    <table>
+      <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Record</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'DM Mono',monospace">2025-03-03 09:14</td><td>S. Nkosi</td><td><span class="badge progress">Tech</span></td><td>Sample received</td><td>REQ-092</td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">2025-03-03 09:02</td><td>S. Nkosi</td><td><span class="badge progress">Tech</span></td><td>Sample received</td><td>REQ-091</td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">2025-03-03 08:52</td><td>Dr. Petersen</td><td><span class="badge routine">Doctor</span></td><td>Released results to patient</td><td>REQ-089</td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">2025-03-03 08:30</td><td>T. Botha</td><td><span class="badge progress">Tech</span></td><td>Results verified</td><td>REQ-087</td></tr>
+        <tr><td style="font-family:'DM Mono',monospace">2025-03-03 08:15</td><td>Manager</td><td><span class="badge submitted">Manager</span></td><td>Stock order created</td><td>ORD-043</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// ==================== MODAL HELPERS ====================
+function openModal(title, bodyHTML, actions){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalBody').innerHTML=bodyHTML;
+  document.getElementById('modalActions').innerHTML=actions||`<button class="btn btn-outline" onclick="closeModal()">Close</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modalOverlay')) document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function openAddCategoryModal(){
+  openModal('Add Test Category',`
+    <div class="fg" style="margin-bottom:14px"><label>Category Name</label><input type="text" placeholder="e.g. Full Blood Count"/></div>
+    <div class="fg"><label>Description</label><textarea placeholder="Describe this test category…"></textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Category added!')">Save Category</button>`);
+}
+function openAddTestModal(){
+  openModal('Add Test Type',`
+    <div class="form-grid" style="gap:12px">
+      <div class="fg"><label>Test Name</label><input type="text" placeholder="Test name"/></div>
+      <div class="fg"><label>Category</label><select><option>Full Blood Count</option><option>Coagulation Studies</option><option>Differential Count</option></select></div>
+      <div class="fg"><label>Sample Type</label><select><option>Whole Blood</option><option>Plasma</option><option>Bone Marrow</option></select></div>
+      <div class="fg"><label>Units</label><input type="text" placeholder="e.g. g/dL"/></div>
+      <div class="fg"><label>Normal Min</label><input type="number"/></div>
+      <div class="fg"><label>Normal Max</label><input type="number"/></div>
+      <div class="fg"><label>Turnaround Time (min)</label><input type="number"/></div>
+    </div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Test type added!')">Save</button>`);
+}
+function openAddDoctorModal(){
+  openModal('Add Doctor User',`
+    <div class="form-grid" style="gap:12px">
+      <div class="fg"><label>Name</label><input type="text"/></div>
+      <div class="fg"><label>Surname</label><input type="text"/></div>
+      <div class="fg"><label>HPCSA Number</label><input type="text" placeholder="MP0…"/></div>
+      <div class="fg"><label>Email (Username)</label><input type="email"/></div>
+      <div class="fg"><label>Contact Number</label><input type="tel"/></div>
+    </div>
+    <div class="alert info" style="margin-top:10px;font-size:12px">📧 A temporary password will be auto-generated and emailed to the doctor.</div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Doctor added! Password emailed.')">Add Doctor</button>`);
+}
+function openAddTechModal(){
+  openModal('Add Lab Technician',`
+    <div class="form-grid" style="gap:12px">
+      <div class="fg"><label>Name</label><input type="text"/></div>
+      <div class="fg"><label>Surname</label><input type="text"/></div>
+      <div class="fg"><label>SA ID Number</label><input type="text"/></div>
+      <div class="fg"><label>Employee Number</label><input type="text"/></div>
+      <div class="fg"><label>Email</label><input type="email"/></div>
+      <div class="fg"><label>Contact Number</label><input type="tel"/></div>
+    </div>
+    <div class="fg" style="margin-top:12px"><label>Assigned Test Types</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">${['FBC','Differential Count','Coagulation','Peripheral Film','Bone Marrow'].map(t=>`<label style="display:flex;align-items:center;gap:5px;font-size:12px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;cursor:pointer"><input type="checkbox" style="accent-color:var(--accent)"/> ${t}</label>`).join('')}</div>
+    </div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Technician added!')">Add Technician</button>`);
+}
+function openAddPatientModal(){
+  openModal('Register Patient',`
+    <div class="form-grid" style="gap:12px">
+      <div class="fg"><label>Name</label><input type="text"/></div>
+      <div class="fg"><label>Surname</label><input type="text"/></div>
+      <div class="fg"><label>SA ID Number</label><input type="text"/></div>
+      <div class="fg"><label>Date of Birth</label><input type="date"/></div>
+      <div class="fg"><label>Cellphone</label><input type="tel"/></div>
+      <div class="fg"><label>Email (Username)</label><input type="email"/></div>
+    </div>
+    <div class="alert info" style="margin-top:10px;font-size:12px">📧 A temporary password will be auto-generated and emailed to the patient.</div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Patient registered! Password emailed.')">Register</button>`);
+}
+function openAdjustStockModal(){
+  openModal('Adjust Stock Level',`
+    <div class="fg" style="margin-bottom:14px"><label>Consumable</label><select><option>EDTA Tubes (3mL)</option><option>Citrate Tubes</option><option>Reagent A (FBC)</option></select></div>
+    <div class="fg" style="margin-bottom:14px"><label>Adjustment Type</label>
+      <select><option>Increase quantity by</option><option>Decrease quantity by</option><option>Set quantity to</option></select>
+    </div>
+    <div class="fg"><label>Quantity</label><input type="number" min="1" value="50"/></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Stock level updated!')">Apply Adjustment</button>`);
+}
+function openAddSupplierModal(){
+  openModal('Add Supplier',`
+    <div class="fg" style="margin-bottom:12px"><label>Supplier Name</label><input type="text"/></div>
+    <div class="fg" style="margin-bottom:12px"><label>Contact Person</label><input type="text"/></div>
+    <div class="fg"><label>Email Address</label><input type="email"/></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Supplier added!')">Save</button>`);
+}
+function openCreateOrderModal(){
+  openModal('Create Stock Order',`
+    <div class="fg" style="margin-bottom:12px"><label>Supplier</label><select><option>LabSupply SA</option><option>MedEquip NMB</option><option>BioTech Ltd</option></select></div>
+    <div class="fg" style="margin-bottom:12px"><label>Order Number</label><input type="text" value="ORD-2025-044"/></div>
+    <div class="fg" style="margin-bottom:14px"><label>Items to Order</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+        <div style="display:flex;gap:10px;align-items:center">
+          <select style="flex:2;padding:7px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px"><option>Citrate Tubes</option><option>EDTA Tubes</option><option>Reagent A</option></select>
+          <input type="number" value="200" style="flex:1;padding:7px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:13px"/>
+          <button class="btn btn-outline btn-sm">+ Add Item</button>
+        </div>
+      </div>
+    </div>
+    <div class="alert info" style="font-size:12px">📧 Supplier will be notified automatically via email once order is created.</div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Order created! Supplier emailed.')">Create Order</button>`);
+}
+function openReturnModal(){
+  openModal('Return Results for Review',`
+    <div class="alert warning" style="margin-bottom:14px">The result will be returned to the performing technician with your note.</div>
+    <div class="fg"><label>Reason / Notes for Technician</label><textarea placeholder="Describe what needs to be corrected…"></textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="closeModal();showToast('⚠ Results returned to technician for review.')">Return for Review</button>`);
+}
+function openAddListModal(title){
+  openModal(`Add ${title.slice(0,-1)}`,`
+    <div class="fg" style="margin-bottom:12px"><label>Name</label><input type="text"/></div>
+    <div class="fg" style="margin-bottom:12px"><label>Category</label><input type="text" placeholder="e.g. Cardiovascular"/></div>
+    <div class="fg"><label>Description</label><textarea placeholder="Short description…"></textarea></div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();showToast('✅ Item added!')">Save</button>`);
+}
+function openPatientView(){
+  openModal('Patient Profile — K. Mashamba',`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;margin-bottom:16px">
+      <div><span style="color:var(--text3)">SA ID:</span> 9204115800086</div>
+      <div><span style="color:var(--text3)">DOB:</span> 1992-04-11</div>
+      <div><span style="color:var(--text3)">Cell:</span> 082 444 5566</div>
+      <div><span style="color:var(--text3)">Email:</span> patient@gmail.com</div>
+    </div>
+    <div class="result-card">
+      <div class="result-row"><span class="result-name">Conditions</span><span style="color:var(--text2);font-size:13px">Hypertension</span></div>
+      <div class="result-row"><span class="result-name">Allergies</span><span style="color:var(--red);font-size:13px">Penicillin</span></div>
+      <div class="result-row"><span class="result-name">Medication</span><span style="color:var(--text2);font-size:13px">Amlodipine 5mg</span></div>
+    </div>`,
+    `<button class="btn btn-outline" onclick="closeModal()">Close</button><button class="btn btn-accent" onclick="closeModal();navigateTo('doc-requests')">New Request</button>`);
+}
+function showNotifications(){
+  openModal('System Alerts',`
+    <div class="alert danger">🚨 K. Mashamba — Haemoglobin critically low: 9.2 g/dL</div>
+    <div class="alert warning">⚠ Citrate Tubes stock below reorder level (95 units)</div>
+    <div class="alert warning">⚠ REQ-089 FBC test is OVERDUE (STAT urgency)</div>
+    <div class="alert info">📧 ORD-2025-043 email sent to BioTech Ltd</div>`);
+}
+
+// ==================== UTILITIES ====================
+function switchTab(btn, showId, hideId){
+  document.getElementById(showId).style.display='block';
+  document.getElementById(hideId).style.display='none';
+  btn.parentElement.querySelectorAll('.panel-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+}
+function filterTable(input, tableId){
+  const q=input.value.toLowerCase();
+  document.getElementById(tableId)?.querySelectorAll('tbody tr').forEach(r=>{
+    r.style.display=r.textContent.toLowerCase().includes(q)?'':'none';
+  });
+}
+function checkAbnormal(input, min, max){
+  const v=parseFloat(input.value);
+  const abn=v<min||v>max;
+  input.style.borderColor=abn?'var(--red)':'var(--border)';
+  input.style.color=abn?'var(--red)':'var(--text)';
+}
+
+// ==================== TOAST ====================
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:28px;right:28px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 20px;font-size:13px;color:var(--text);z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.4);max-width:340px;line-height:1.5;animation:slideUp .3s ease';
+  t.textContent=msg;
+  const style=document.createElement('style');
+  style.textContent='@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(style);
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3500);
+}
 </script>
 </body>
 </html>
